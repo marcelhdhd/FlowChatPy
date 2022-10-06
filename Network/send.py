@@ -6,4 +6,5 @@ host = "localhost" # "127.0.1.1"
 port = 8000
 
 my_socket.connect((host, port))
-my_socket.send("hello".encode()) #Fill Text with User Input from guimanager @TODO
+my_socket.send("hello".encode()) #Fill Text with User Input from GUImanager @TODO
+#Test123
