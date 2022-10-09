@@ -1,26 +1,36 @@
-# TODO: Call broadcast method
+import discovery_handler
+
+userlist = []
+
+# Starts the FlowChat discovery daemons
 def flow_chat_discover():
-    
-
-def listen_for_broadcast():
-
+    discovery_handler.discoveryStart()
 
 
 # TODO: send Message
 def send_message(message):
-    Network.send(message)
+    return
 
 # TODO: relay incoming messages recieved by recv.py to core
 def recv_message():
-
+    return
 
 # TODO: add found connections to userlist
 def add_users(users):
-
+    return
 
 # TODO: check if connections are still alive
 def check_users():
-
+    return
 
 # TODO: remove user with id(?)
 def remove_user(user):
+    return
+
+# update userlist
+def add_user(usr):
+    if usr not in userlist:
+        userlist.append(usr)
+        print(usr)
+    return
+
