@@ -8,16 +8,13 @@ def flow_chat_discover():
 
 
 # TODO: send Message
-def send_message(message):
+def send_message(message, user):
     return
 
 # TODO: relay incoming messages recieved by recv.py to core
 def recv_message():
     return
 
-# TODO: add found connections to userlist
-def add_users(users):
-    return
 
 # TODO: check if connections are still alive
 def check_users():
@@ -27,10 +24,10 @@ def check_users():
 def remove_user(user):
     return
 
-# update userlist
-def add_user(usr):
-    if usr not in userlist:
-        userlist.append(usr)
-        print(usr)
+# TODO: add found connections to userlist
+def add_user(user):
+    if user not in userlist:
+        userlist.append(user)
+        print(user)
     return
 
