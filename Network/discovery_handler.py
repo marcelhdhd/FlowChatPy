@@ -52,13 +52,14 @@ def broadcast_listener():
     while True:
         # will wait until a packet was recieved
         returnmsg, returnip = sock.recvfrom(4096)
+        # decode returnmsg from bytes to string (utf-8)
+        returnmsg = returnmsg.decode(msg_encoding)
         # debug printing of ip:port = message
-        print("recieved message from: " + str(returnip[0]) + ":" + str(returnip[1]) + " = " + str(returnmsg.decode(msg_encoding)))
-        print(type(returnmsg))
-        # TODO: if broadcast packet message content is "FlowChatDisover" add to netmanager user list
+        print("recieved message from: " + str(returnip[0]) + ":" + str(returnip[1]) + " = " + str(returnmsg))
+        # if broadcast packet message content is "FlowChatDisover" add to netmanager user list
         if ( returnmsg == "FlowChatDiscover" ):
-            print("if")
-            netmanager.add_user(returnmsg)
+            print("DEBUG: calling add_user")
+            netmanager.add_user(returnip[0])
 
 
 # Start discovery and listener methods as own threads
@@ -71,3 +72,4 @@ def discoveryStart():
     broadcast_daemon.start()
 
 discoveryStart()
+time.sleep(30)

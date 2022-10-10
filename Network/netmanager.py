@@ -24,10 +24,10 @@ def check_users():
 def remove_user(user):
     return
 
-# TODO: add found connections to userlist
+# add found connections to userlist
 def add_user(user):
     if user not in userlist:
         userlist.append(user)
-        print(user)
+        print("DEBUG: " + user)
     return
 
