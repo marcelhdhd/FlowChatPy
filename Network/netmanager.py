@@ -15,6 +15,9 @@ def send_message(message, user):
 def recv_message():
     return
 
+def get_users():
+    bogo_userlist = ("192.168.12.23", "10.23.1.93")
+    return bogo_userlist
 
 # TODO: check if connections are still alive
 def check_users():
