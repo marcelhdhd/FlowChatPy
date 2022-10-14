@@ -42,37 +42,34 @@ def ip_finder():
 
 # method for finding "FlowChatDiscover" packages
 def broadcast_listener():
-    print("test")
+    print("DEBUG: broadcast_listener")
     # UDP socket for broadcast (ipv4, udp(?), udp)
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     # Bind to all interfaces on broadcast port
     sock.bind(("0.0.0.0", 25000))
-    print("broadcast_listener")
+    print("DEBUG: broadcast_listener")
     while True:
         # will wait until a packet was recieved
         returnmsg, returnip = sock.recvfrom(4096)
+        # decode returnmsg from bytes to string (utf-8)
+        returnmsg = returnmsg.decode(msg_encoding)
         # debug printing of ip:port = message
-        print("recieved message from: " + str(returnip[0]) + ":" + str(returnip[1]) + " = " + str(returnmsg.decode(msg_encoding)))
-        print(type(returnmsg))
+        print("recieved message from: " + str(returnip[0]) + ":" + str(returnip[1]) + " = " + str(returnmsg))
+        # if broadcast packet message content is "FlowChatDisover" add to netmanager user list
         if ( returnmsg == "FlowChatDiscover" ):
-            print("if")
-            netmanager.add_user(returnmsg)
+            print("DEBUG: calling add_user")
+            netmanager.add_user(returnip[0])
 
 
-# while True:
-    # broadcast_listener()
-
-    # listener_daemon = threading.Thread(target=broadcast_listener, daemon=True)
-
-    # listener_daemon.start()
+# Start discovery and listener methods as own threads
 def discoveryStart():
+    # see: https://docs.python.org/3/library/threading.html
     listener_daemon = threading.Thread(target=broadcast_listener, daemon=True)
     broadcast_daemon = threading.Thread(target=broadcast_discover, daemon=True)
-    print("discoveryStart")
+    print("DEBUG: discoveryStart")
     listener_daemon.start()
     broadcast_daemon.start()
 
 discoveryStart()
 time.sleep(30)
-# broadcast_discover()
