@@ -1,6 +1,6 @@
 import discovery_handler
 
-userlist = []
+userlist = [] #evtl anders
 
 # Starts the FlowChat discovery daemons
 def flow_chat_discover():
