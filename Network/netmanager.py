@@ -36,3 +36,9 @@ def add_user(user):
         print("DEBUG: " + user)
     return
 
+def startnet():
+    # todo: implement starting procedure
+    return
+
+if __name__ == 'netmanager':
+    startnet()

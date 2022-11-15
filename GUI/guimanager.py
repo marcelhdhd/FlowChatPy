@@ -1,5 +1,10 @@
 import tkinter as tk
+from tkinter import messagebox
 
+
+def on_closing():           #What happens when pressing the "X"-Button
+    if messagebox.askokcancel("Quit", "Do you want to quit?"):  #Asks if you really want to quit TODO: send meesege, that the user is leaving
+        gui.destroy()   #Close
 
 def send(event=None):               #For later: sends message to other users
     msg_box.insert(tk.END, my_msg.get())      #For now: places your message into the end of the message-box
@@ -8,6 +13,9 @@ def send(event=None):               #For later: sends message to other users
 
 gui = tk.Tk()   #Window is created as an instance of tk
 gui.title("FlowChat")   #Titel of the window
+
+gui.protocol("WM_DELETE_WINDOW", on_closing) #Defines what the "X"-Button does
+#gui.mainloop()
 
 messages_frame = tk.Frame(gui)  #Creates frame widget
 my_msg = tk.StringVar()     #My message to be sent | StringVar() helps with entry | TODO: look into StringVar more
