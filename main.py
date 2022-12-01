@@ -1,21 +1,21 @@
-# This is a sample Python script.
+import sys
+
 import netmanager
 
+if len(sys.argv) == 1:
+    # sys.argv[0] should be the name of the script, main.py
+    print("Starting FlowChatPy in GUI mode")
+    is_GUI = True
+elif (len(sys.argv) == 2 and (sys.argv[1] == "--gui" or sys.argv[1] == "-g")):
+    print("Starting FlowChatPy in GUI mode")
+    is_GUI = True
+elif (len(sys.argv) == 2 and (sys.argv[1] == "--cli" or sys.argv[1] == "-c")):
+    print("Starting FlowChatPy in CLI mode")
+    is_GUI = False
 
-# Press Umschalt+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Strg+F8 to toggle the breakpoint.
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     netmanager.startnet()
-
-
-    #Test 234
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
