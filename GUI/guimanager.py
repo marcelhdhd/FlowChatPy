@@ -70,15 +70,14 @@ class Guimanager:
             # Close
             self.gui.destroy()
 
-    # For later: sends message to other users
-    # For now: places your message into the end of the message-box
+    # sends message to other users and empties send box
     def send(self, *args):
         # sends the message to network, is also sent to networkmanager message_queue
         Network.networkmanager.send_message(self.my_msg.get())
         # Deletes what you wrote in the entry-box
         self.my_msg.set("")
 
-    # poll for new messages in networkmanager
+    # poll for new messages in networkmanager and push them to Chat box
     def poll_for_new_messages(self):
         while True:
             if Network.networkmanager.message_queue:
