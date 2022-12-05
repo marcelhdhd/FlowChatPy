@@ -6,7 +6,7 @@ port_send = 24990
 port_recv = 25000
 broadcast_address = (broadcast_ip, port_recv)
 msg_encoding = "utf-8"
-msg_payload = "FlowChatDiscover says HELLO"
+msg_payload = "FlowChatDiscover on pc " + socket.gethostname() + " says HELLO"
 msg_broadcast = (msg_payload, msg_encoding)
 message_queue = []
 
