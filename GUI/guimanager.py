@@ -89,4 +89,4 @@ class Guimanager:
                     Network.networkmanager.message_queue.remove(tuplemsg)
 
 
-g = Guimanager()          # Window is created as an instance of tk
+g = Guimanager()          # Window is created as a new Object

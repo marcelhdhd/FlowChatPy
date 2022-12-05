@@ -64,7 +64,6 @@ def listen_handle_messages():
         ip = msg_and_address[1][1]
         print("recieved message from: " + addr + ":" + message)
         message_queue.append((addr, message))
-        # todo: send message and ip addr to GUI
 
 
 # method for sending a message
