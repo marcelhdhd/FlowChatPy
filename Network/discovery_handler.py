@@ -6,6 +6,7 @@ import time
 import netmanager
 
 broadcast_ip = '255.255.255.255'
+hostname = ''
 discover_localport = 24990
 discover_remoteport = 25000
 broadcast_address = (broadcast_ip, discover_remoteport)
@@ -16,15 +17,20 @@ msg_broadcast = (msg_payload, msg_encoding)
 
 # method for sending "FlowChatDiscover" broadcast packages
 def broadcast_discover():
-    # UDP socket for broadcast (ipv4, udp(?), udp)
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-    # Allow broadcast on socket
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-    # Bind socket to local ip
-    sock.bind((ip_finder(), discover_localport))
+    # find out local ip
+    ip_finder()
+
     while True:
+        # UDP socket for broadcast (ipv4, udp(?), udp)
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+        # Allow broadcast on socket
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        # Bind socket to local ip
+        sock.bind((hostname, discover_localport))
         # vor every 10 seconds send broadcast packet
         sock.sendto(bytes(msg_payload, msg_encoding), broadcast_address)
+        # Close socket so that if discover_remoteport changed, that change is sent instead
+        sock.close()
         time.sleep(10)
 
 
@@ -37,7 +43,9 @@ def ip_finder():
     # Connect to ipv4 from the internet
     ipsock.connect(('1.1.1.1', 53))
     # return local ip from which the connection was established
-    return ipsock.getsockname()[0]
+    hostname = ipsock.getsockname()[0]
+    ipsock.close()
+    return hostname
 
 
 # method for finding "FlowChatDiscover" packages

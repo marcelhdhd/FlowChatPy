@@ -1,7 +1,7 @@
 import discovery_handler
 
-userlist = [] #evtl anders bennenen
-sockets = [] # Socket Array von aktiven Verbindungen
+userlist = [] # evtl anders bennenen
+
 
 # Starts the FlowChat discovery daemons
 def flow_chat_discover():
@@ -10,6 +10,7 @@ def flow_chat_discover():
 
 # TODO: send Message
 def send_message(message, user):
+
     return
 
 # TODO: relay incoming messages recieved by recv.py to core

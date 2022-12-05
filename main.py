@@ -1,7 +1,7 @@
 import sys
 
 import GUI.guimanager
-import netmanager
+import Network.networkmanager
 
 # todo: make FlowChat run in cli mode when called with '-c' argument
 if len(sys.argv) == 1:
@@ -20,5 +20,5 @@ elif (len(sys.argv) == 2 and (sys.argv[1] == "--cli" or sys.argv[1] == "-c")):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    netmanager.startnet()
+    Network.networkmanager
     GUI.guimanager.gui

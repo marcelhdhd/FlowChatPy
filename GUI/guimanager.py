@@ -1,6 +1,9 @@
+from threading import Thread
 from tkinter import *
 from tkinter import messagebox
 from datetime import datetime
+
+import Network.networkmanager
 
 
 # In-depth tutorial for tkinter
@@ -65,12 +68,24 @@ class Guimanager:
         # Get a datetime object to retrieve current time from
         now = datetime.now()
         # Ready the String to be put into the msg_box TODO: also add username
-        current_time = now.strftime("[%H:%M:%S]: ")
-        message = current_time + self.my_msg.get()
+        current_time = now.strftime("[%H:%M:%S] ")
+        message = current_time + "LOCAL : " + self.my_msg.get()
         # Insert the message into the box
         self.msg_box.insert(END, message)
         # Deletes what you wrote in the entry-box
         self.my_msg.set("")
+        # sends the message to network
+        Network.networkmanager.send_message(message)
+
+    # poll for new messages in networkmanager
+    def poll_for_new_messages(self):
+        if Network.networkmanager.message_queue:
+            for tuplemsg in Network.networkmanager.message_queue:
+                ip, msg = tuplemsg
+                current_time = datetime.now().strftime("[%H:%M:%S] ")
+                message = ip + " : " + msg
+                self.msg_box.insert(END, message)
+
 
 
 gui = Tk()          # Window is created as an instance of tk
