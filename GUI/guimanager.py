@@ -1,4 +1,4 @@
-from threading import Thread
+import threading
 from tkinter import *
 from tkinter import messagebox
 from datetime import datetime
@@ -12,17 +12,19 @@ import Network.networkmanager
 
 class Guimanager:
 
-    def __init__(self, gui):
+    def __init__(self):
 
+        # Chat Window
+        self.gui = Tk()
         ##################################
         # Here is the window initialized #
         ##################################
         # Titel of the window
-        gui.title("FlowChat")
+        self.gui.title("FlowChat")
         # Defines what the "X"-Button does
-        gui.protocol("WM_DELETE_WINDOW", self.on_closing)
+        self.gui.protocol("WM_DELETE_WINDOW", self.on_closing)
         # frame widget on which other widgets are placed
-        self.messages_frame = Frame(gui)
+        self.messages_frame = Frame(self.gui)
 #;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         # Here are all widgets defined#
         ###############################
@@ -34,9 +36,9 @@ class Guimanager:
         # message-box
         self.msg_box = Listbox(self.messages_frame, height=15, width=50, yscrollcommand=self.scrollbar.set)
         # entry-box. What you write there becomes my_msg
-        self.entry_box = Entry(gui, width=45, textvariable=self.my_msg)
+        self.entry_box = Entry(self.gui, width=45, textvariable=self.my_msg)
         # send-button
-        self.send_button = Button(gui, text="Send", command=self.send)
+        self.send_button = Button(self.gui, text="Send", command=self.send)
 #;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         # Here are all widgets placed #
         ###############################
@@ -49,45 +51,43 @@ class Guimanager:
         self.messages_frame.pack()
 
         # Binds send method to pressing enter
-        self.entry_box.bind("<Return>", gui.send)
+        self.entry_box.bind("<Return>", self.gui.send)
         # Places the entry-box on the left
         self.entry_box.pack(side=LEFT)
         # Places send-button to the right
         self.send_button.pack(side=RIGHT)
+
+        # Recieve new messages as a new thread
+        recv = threading.Thread(target=self.poll_for_new_messages)
+        recv.start()
+        # Start mainloop
+        self.gui.mainloop()
 
     # Manages pressing the "X"-Button
     def on_closing(self, *args):
         # Asks if you really want to quit TODO: send meesege, that the user is leaving
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
             # Close
-            gui.destroy()
+            self.gui.destroy()
 
     # For later: sends message to other users
     # For now: places your message into the end of the message-box
     def send(self, *args):
-        # Get a datetime object to retrieve current time from
-        now = datetime.now()
-        # Ready the String to be put into the msg_box TODO: also add username
-        current_time = now.strftime("[%H:%M:%S] ")
-        message = current_time + "LOCAL : " + self.my_msg.get()
-        # Insert the message into the box
-        self.msg_box.insert(END, message)
+        # sends the message to network, is also sent to networkmanager message_queue
+        Network.networkmanager.send_message(self.my_msg.get())
         # Deletes what you wrote in the entry-box
         self.my_msg.set("")
-        # sends the message to network
-        Network.networkmanager.send_message(message)
 
     # poll for new messages in networkmanager
     def poll_for_new_messages(self):
-        if Network.networkmanager.message_queue:
-            for tuplemsg in Network.networkmanager.message_queue:
-                ip, msg = tuplemsg
-                current_time = datetime.now().strftime("[%H:%M:%S] ")
-                message = ip + " : " + msg
-                self.msg_box.insert(END, message)
+        while True:
+            if Network.networkmanager.message_queue:
+                for tuplemsg in Network.networkmanager.message_queue:
+                    self.ip, self.msg = tuplemsg
+                    self.current_time = datetime.now().strftime("[%H:%M:%S] ")
+                    self.message = self.current_time + self.ip + " : " + self.msg
+                    self.msg_box.insert(END, self.message)
+                    Network.networkmanager.message_queue.remove(tuplemsg)
 
 
-
-gui = Tk()          # Window is created as an instance of tk
-Guimanager(gui)     # Encapsulated main code into a class
-gui.mainloop()      # Start
+g = Guimanager()          # Window is created as an instance of tk
