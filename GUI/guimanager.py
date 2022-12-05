@@ -64,7 +64,7 @@ class Guimanager:
     def send(self, *args):
         # Get a datetime object to retrieve current time from
         now = datetime.now()
-        # Ready the String to be put into the msg_box
+        # Ready the String to be put into the msg_box TODO: also add username
         current_time = now.strftime("[%H:%M:%S]: ")
         message = current_time + self.my_msg.get()
         # Insert the message into the box

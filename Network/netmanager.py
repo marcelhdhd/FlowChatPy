@@ -38,6 +38,7 @@ def add_user(user):
 
 def startnet():
     # todo: implement starting procedure and network loop
+    discovery_handler.discoveryStart()
     return
 
 if __name__ == 'netmanager':
