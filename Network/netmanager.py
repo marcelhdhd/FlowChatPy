@@ -1,6 +1,7 @@
 import discovery_handler
 
-userlist = [] #evtl anders
+userlist = [] #evtl anders bennenen
+sockets = [] # Socket Array von aktiven Verbindungen
 
 # Starts the FlowChat discovery daemons
 def flow_chat_discover():
@@ -36,9 +37,18 @@ def add_user(user):
         print("DEBUG: " + user)
     return
 
+# add socket to active socket array
+def add_socket(socket):
+    if socket not in sockets:
+        sockets.append(socket)
+        print("DEBUG: Socket added: " + socket)
+    return
+
 def startnet():
     # todo: implement starting procedure and network loop
     discovery_handler.discoveryStart()
+    # todo: handle incoming connections
+    # todo: handle outgoing connections
     return
 
 if __name__ == 'netmanager':
