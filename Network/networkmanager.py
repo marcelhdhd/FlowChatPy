@@ -1,5 +1,4 @@
 import socket
-import time
 import threading
 
 broadcast_ip = '255.255.255.255'
@@ -48,7 +47,6 @@ def ready_send_socket():
     sock.bind((hostname, port_send))
     # broadcast hello
     sock.sendto(bytes(msg_payload, msg_encoding), broadcast_address)
-
     return sock
 
 
@@ -72,12 +70,12 @@ def listen_handle_messages():
 # method for sending a message
 def send_message(message):
     # also utf-8 encode that message
-    send_sock.send(message.encode(msg_encoding))
+    send_sock.sendto(message.encode(msg_encoding), broadcast_address)
 
 
-# deamonize the listener so that one does not block the main thread
+# daemonize the listener so that one does not block the main thread
 def main():
-    listener_daemon = threading.Thread(target=listen_handle_messages(), daemon=True)
+    listener_daemon = threading.Thread(target=listen_handle_messages, daemon=True)
     listener_daemon.start()
 
 

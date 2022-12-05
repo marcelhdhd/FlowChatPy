@@ -1,4 +1,5 @@
 import sys
+import threading
 
 import GUI.guimanager
 import Network.networkmanager
@@ -20,5 +21,5 @@ elif (len(sys.argv) == 2 and (sys.argv[1] == "--cli" or sys.argv[1] == "-c")):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    Network.networkmanager
-    GUI.guimanager.gui
+    net = threading.Thread(target=Network.networkmanager, daemon=True)
+    GUI.guimanager
