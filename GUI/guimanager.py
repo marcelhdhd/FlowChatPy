@@ -1,3 +1,4 @@
+import os
 import threading
 from tkinter import *
 from tkinter import messagebox
@@ -69,6 +70,7 @@ class Guimanager:
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
             # Close
             self.gui.destroy()
+            os._exit(0)
 
     # sends message to other users and empties send box
     def send(self, *args):
