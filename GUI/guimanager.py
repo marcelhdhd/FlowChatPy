@@ -5,7 +5,6 @@ from tkinter import messagebox
 from datetime import datetime
 
 import Network.networkmanager
-import guimanager
 
 
 # In-depth tutorial for tkinter
@@ -27,6 +26,8 @@ class Guimanager:
         self.gui.protocol("WM_DELETE_WINDOW", self.on_closing)
         # frame widget on which other widgets are placed
         self.messages_frame = Frame(self.gui)
+        # disallow window tearing
+        self.gui.option_add('*tearOFF', FALSE)
 #;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         # Here are all widgets defined#
         ###############################
@@ -45,6 +46,13 @@ class Guimanager:
         self.entry_box = Entry(self.gui, width=45, textvariable=self.my_msg)
         # send-button
         self.send_button = Button(self.gui, text="Send", command=self.send)
+
+        # Menubar config
+        self.menubar = Menu(self.gui)
+        self.gui.config(menu=self.menubar)
+        self.startmenu = Menu(self.menubar)
+        self.menubar.add_cascade(label="Start", menu=self.startmenu)
+        self.startmenu.add_command(label="Beenden", command=self.on_closing)
 #;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         # Here are all widgets placed #
         ###############################
