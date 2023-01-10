@@ -7,6 +7,7 @@ port_recv = 25000
 broadcast_address = (broadcast_ip, port_recv)
 msg_encoding = "utf-8"
 msg_payload = "FlowChatDiscover on pc " + socket.gethostname() + " says HELLO"
+on_closing_payload = "User " + socket.gethostname() + " is exiting FlowChatPy"
 msg_broadcast = (msg_payload, msg_encoding)
 message_queue = []
 
@@ -33,7 +34,6 @@ def ready_listen_socket():
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     # Bind socket to any ip and recv port
     sock.bind(("0.0.0.0", port_recv))
-
     return sock
 
 
@@ -71,6 +71,10 @@ def send_message(message):
     # also utf-8 encode that message
     send_sock.sendto(message.encode(msg_encoding), broadcast_address)
 
+def on_closing():
+    send_sock.sendto(bytes(on_closing_payload, msg_encoding), broadcast_address)
+    send_sock.close()
+    listen_sock.close()
 
 # daemonize the listener so that one does not block the main thread
 def main():

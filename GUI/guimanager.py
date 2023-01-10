@@ -70,6 +70,7 @@ class Guimanager:
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
             # Close
             self.gui.destroy()
+            Network.networkmanager.on_closing()
             os._exit(0)
 
     # sends message to other users and empties send box
