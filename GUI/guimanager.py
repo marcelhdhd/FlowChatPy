@@ -30,16 +30,17 @@ class Guimanager:
 #;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         # Here are all widgets defined#
         ###############################
-        # scrollbar to scroll to past messages |TODO: autoscrolling
-        # scrollbar at the bottom to view large messages TODO: make both scrollbars work
-        self.scrollbar = Scrollbar(self.messages_frame)
-        self.scrollbar_bottom = Scrollbar(self.messages_frame, orient='horizontal')
-
         # message to be sent | StringVar() helps with entry | TODO: look into StringVar more
         self.my_msg = StringVar()
         # message-box with scrollbars
         self.msg_box = Listbox(self.messages_frame, height=15, width=50)
+
+        # scrollbar to scroll to past messages |TODO: autoscrolling
+        # scrollbar at the bottom to view large messages
+        self.scrollbar = Scrollbar(self.messages_frame, command=self.msg_box.yview)
+        self.scrollbar_bottom = Scrollbar(self.messages_frame, orient='horizontal', command=self.msg_box.xview)
         self.msg_box.config(yscrollcommand=self.scrollbar.set, xscrollcommand=self.scrollbar_bottom.set)
+
         # entry-box. What you write there becomes my_msg
         self.entry_box = Entry(self.gui, width=45, textvariable=self.my_msg)
         # send-button
@@ -52,7 +53,7 @@ class Guimanager:
         self.scrollbar.pack(side=RIGHT, fill=Y)
         self.scrollbar_bottom.pack(side=BOTTOM, fill=X)
         # Places the messagebox to the left | TODO: look into stretching when making the window bigger
-        self.msg_box.pack(side=LEFT)
+        self.msg_box.pack(side=LEFT, expand=True)
 
         # Places the message-frame
         self.messages_frame.pack()
@@ -74,7 +75,7 @@ class Guimanager:
 
     # Manages pressing the "X"-Button
     def on_closing(self, *args):
-        # Asks if you really want to quit TODO: send message, that the user is leaving
+        # Asks if you really want to quit
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
             # Close Window
             self.gui.destroy()
