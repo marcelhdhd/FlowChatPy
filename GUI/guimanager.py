@@ -69,6 +69,7 @@ class Guimanager:
         recv = threading.Thread(target=self.poll_for_new_messages)
         recv.start()
 
+        # TODO: Debug, Chat window always on top
         self.gui.wm_attributes("-topmost", 1)
         # Start mainloop
         self.gui.mainloop()
