@@ -19,7 +19,7 @@ class Guimanager:
         ##################################
         # Here is the window initialized #
         ##################################
-        # Titel of the window
+        # Title of the window
         self.gui.title("FlowChat")
         # Defines what the "X"-Button does
         self.gui.protocol("WM_DELETE_WINDOW", self.on_closing)
@@ -51,7 +51,7 @@ class Guimanager:
         self.messages_frame.pack()
 
         # Binds send method to pressing enter
-        self.entry_box.bind("<Return>", self.gui.send)
+        self.entry_box.bind("<Return>", self.send)
         # Places the entry-box on the left
         self.entry_box.pack(side=LEFT)
         # Places send-button to the right
@@ -65,7 +65,7 @@ class Guimanager:
 
     # Manages pressing the "X"-Button
     def on_closing(self, *args):
-        # Asks if you really want to quit TODO: send meesege, that the user is leaving
+        # Asks if you really want to quit TODO: send message, that the user is leaving
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
             # Close
             self.gui.destroy()
