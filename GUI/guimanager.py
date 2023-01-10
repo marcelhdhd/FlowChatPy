@@ -90,6 +90,8 @@ class Guimanager:
                     self.message = self.current_time + self.ip + " : " + self.msg
                     self.msg_box.insert(END, self.message)
                     Network.networkmanager.message_queue.remove(tuplemsg)
+                    # Scrolled automatisch zu einer neuen Nachricht
+                    self.msg_box.see("end")
 
 
 g = Guimanager()          # Window is created as a new Object
