@@ -25,6 +25,27 @@ class CoreTestUI:
         self.container.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.container.option_add('*tearOFF', FALSE)
         self.container.geometry("400x300")
+        # Menu bar
+        self.menu_bar_main = Menu(self.container)
+        self.menu_bar_start = Menu(self.menu_bar_main, tearoff=0)
+        self.menu_bar_start.add_cascade(label="upper")
+        self.menu_bar_start.add_separator()
+        self.menu_bar_start.add_command(label="Beenden", command=self.on_closing)
+        self.menu_bar_start.add_cascade(label="lower")
+        self.menu_bar_test1 = Menu(self.menu_bar_main, tearoff=0)
+        self.menu_bar_test1.add_cascade(label="upper")
+        self.menu_bar_start.add_separator()
+        self.menu_bar_test1.add_command(label="lower")
+        self.menu_bar_test2 = Menu(self.menu_bar_main)
+        self.menu_bar_test2.add_cascade(label="test")
+        self.menu_bar_test2.add_command(label="test2")
+
+        self.menu_bar_main.add_cascade(label="Start", menu=self.menu_bar_start)
+        self.menu_bar_main.add_cascade(label="test1", menu=self.menu_bar_test1)
+        self.menu_bar_main.add_cascade(label="test2", menu=self.menu_bar_test2)
+        self.menu_bar_main.add_command(label="Beenden", command=self.on_closing)
+
+        self.container.config(menu=self.menu_bar_main)
         # Grid configuration
         self.container.columnconfigure(0, weight=3)
         self.container.columnconfigure(1, weight=1, uniform="column")
