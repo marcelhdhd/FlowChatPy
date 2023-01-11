@@ -2,10 +2,10 @@ class FlowUser:                         # Constructor for the User Part
     id = 0
 
     def __init__(self, ip, name):
-        self.id = id
+        self.id = FlowUser.id
         self.ip = ip
         self.name = name
-        id += 1
+        FlowUser.id += 1
 
     def sendMessage(self, message):
         self.placeholder = message      # TODO need network function to send message
