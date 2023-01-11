@@ -48,9 +48,9 @@ class CoreTestUI:
         self.container.config(menu=self.menu_bar_main)
         # Grid configuration
         self.container.columnconfigure(0, weight=3)
-        self.container.columnconfigure(1, weight=1, uniform="column")
+        self.container.columnconfigure(1, weight=0)
         self.container.rowconfigure(0, weight=3)
-        self.container.rowconfigure(1, weight=1)
+        self.container.rowconfigure(1, weight=0, uniform="column")
         # Widget initialization
         self.widget_scrollbar = Scrollbar(self.container)
         self.widget_scrollbar.grid(row=0, rowspan=1, column=0, columnspan=1, sticky="ns")
