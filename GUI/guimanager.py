@@ -26,61 +26,57 @@ class Guimanager:
         self.gui.title("FlowChat")
         # Defines what the "X"-Button does
         self.gui.protocol("WM_DELETE_WINDOW", self.on_closing)
-        # frame widget on which other widgets are placed
-        self.messages_frame = Frame(self.gui)
         # disallow window tearing
         self.gui.option_add('*tearOFF', FALSE)
+        self.gui.geometry("400x300")
+        # frame widget on which other widgets are placed
+        # Menu bar
+        self.menu_bar_main = Menu(self.gui)
+        # Menu bar Main tab
+        self.menu_bar_start = Menu(self.menu_bar_main, tearoff=0)
+        self.menu_bar_start.add_cascade(label="upper")
+        self.menu_bar_start.add_separator()
+        self.menu_bar_start.add_command(label="Close", command=self.on_closing)
+        # Menu bar Settings tab
+        self.menu_bar_settings = Menu(self.menu_bar_main, tearoff=0)
+        self.menu_bar_settings.add_cascade(label="Change Name")
+        self.menu_bar_settings.add_separator()
+        self.menu_bar_settings.add_command(label="lower")
+
+        self.menu_bar_main.add_cascade(label="Start", menu=self.menu_bar_start)
+        self.menu_bar_main.add_cascade(label="Settings", menu=self.menu_bar_settings)
+
+        self.gui.config(menu=self.menu_bar_main)
 #;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        # Widgets should be defined here #
-        ##################################
+        # Grid configuration
+        self.gui.columnconfigure(0, weight=3)
+        self.gui.columnconfigure(1, weight=0)
+        self.gui.rowconfigure(0, weight=3)
+        self.gui.rowconfigure(1, weight=0, uniform="column")
+        # Widget initialization
+        self.widget_msg_box = Listbox(self.gui, height=15, width=50)
+        self.widget_msg_box.grid(row=0, rowspan=1, column=0, columnspan=1, sticky="nsew")
+        self.widget_scrollbar = Scrollbar(self.gui, command=self.widget_msg_box.yview)
+        self.widget_scrollbar.grid(row=0, column=1, sticky="nesw")
+        self.widget_scrollbar_bottom = Scrollbar(self.gui, orient='horizontal', command=self.widget_msg_box.xview)
+        self.widget_scrollbar_bottom.grid(row=1, column=0, sticky="nesw")
+        self.widget_msg_box.config(yscrollcommand=self.widget_scrollbar.set, xscrollcommand=self.widget_scrollbar_bottom.set)
 
-        # message to be sent | StringVar() helps with entry | TODO: look into StringVar more
-        self.my_msg = StringVar()
+        self.widget_my_msg = StringVar()
+        self.widget_entry_box = Entry(self.gui, width=45, textvariable=self.widget_my_msg)
+        self.widget_entry_box.bind("<Return>", self.send)
+        self.widget_entry_box.grid(row=2, column=0, sticky="ew")
+        self.widget_button_send = Button(self.gui, text="Send", command=self.send)
+        self.widget_button_send.grid(row=2, column=1, columnspan=2)
 
-        # message-box with scrollbars
-        self.msg_box = Listbox(self.messages_frame, height=15, width=50)
+        self.message_poll_state = True
 
-        # scrollbar to scroll to past messages |TODO: autoscrolling
-
-        # scrollbar at the bottom to view large messages
-        self.scrollbar = Scrollbar(self.messages_frame, command=self.msg_box.yview)
-        self.scrollbar_bottom = Scrollbar(self.messages_frame, orient='horizontal', command=self.msg_box.xview)
-        self.msg_box.config(yscrollcommand=self.scrollbar.set, xscrollcommand=self.scrollbar_bottom.set)
-
-        # entry-box. What you write here is passed on as my_msg
-        self.entry_box = Entry(self.gui, width=45, textvariable=self.my_msg)
-        # send-button
-        self.send_button = Button(self.gui, text="Send", command=self.send)
-
-        # Menubar config
-        self.menubar = Menu(self.gui)
-        self.gui.config(menu=self.menubar)
-        self.startmenu = Menu(self.menubar)
-        self.menubar.add_cascade(label="Start", menu=self.startmenu)
-        self.startmenu.add_command(label="Beenden", command=self.on_closing)
+        # Recieve new messages as a new thread
+        self.recv = threading.Thread(target=self.poll_for_new_messages)
+        self.recv.start()
+        # Start mainloop
+        self.gui.mainloop()
 #;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        # Here are all widgets placed #
-        ###############################
-        # Places the scrollbar to the right, stretching on the Y-axis
-        # Also places additional bar to the bottom, stretching on the X-Axis
-        self.scrollbar.pack(side=RIGHT, fill=Y)
-        self.scrollbar_bottom.pack(side=BOTTOM, fill=X)
-        # Places the messagebox to the left | TODO: look into stretching when making the window bigger
-        self.msg_box.pack(side=LEFT, expand=True)
-
-        # Places the message-frame
-        self.messages_frame.pack()
-
-        # Binds send method to pressing enter
-        self.entry_box.bind("<Return>", self.send)
-        # Places the entry-box on the left
-        self.entry_box.pack(side=LEFT)
-        # Places send-button to the right
-        self.send_button.pack(side=RIGHT)
-
-        # receive new messages as a new thread
-        recv = threading.Thread(target=self.poll_for_new_messages)
-        recv.start()
 
         # TODO: This is for Debug only: Chat window always on top
         self.gui.wm_attributes("-topmost", 1)
@@ -101,9 +97,9 @@ class Guimanager:
     # sends message to other users and empties send box
     def send(self, *args):
         # sends the message to network, is also sent to networkmanager message_queue
-        Network.networkmanager.send_message(self.my_msg.get())
+        Network.networkmanager.send_message(self.widget_my_msg.get())
         # Deletes what you wrote in the entry-box
-        self.my_msg.set("")
+        self.widget_my_msg.set("")
 
     # poll for new messages in networkmanager and push them to Chat box
     def poll_for_new_messages(self):
@@ -118,11 +114,11 @@ class Guimanager:
                     self.current_time = datetime.now().strftime("[%H:%M:%S] ")
                     self.message = self.current_time + self.ip + " : " + self.msg
                     # Push message to message box
-                    self.msg_box.insert(END, self.message)
+                    self.widget_msg_box.insert(END, self.message)
                     # remove message from message_queue
                     Network.networkmanager.message_queue.remove(tuplemsg)
                     # Scrolled automatisch zu einer neuen Nachricht
-                    self.msg_box.see("end")
+                    self.widget_msg_box.see("end")
 
 
 g = Guimanager()          # Window is created as a new Object
