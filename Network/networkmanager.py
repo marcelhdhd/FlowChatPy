@@ -1,6 +1,7 @@
 import socket
 import threading
 
+# basic networking code that allows messages to be passed over broadcast to other users as bitstream
 broadcast_ip = '255.255.255.255'
 port_send = 24990
 port_recv = 25000
@@ -59,6 +60,7 @@ def listen_handle_messages():
         # message will be utf-8 decoded
         message = msg_and_address[0].decode(msg_encoding)
         # also save ip addr to display in GUI
+        # todo change displayed addr to chosen username to allow recognition of users
         addr = msg_and_address[1][0]
         # also save port for ?
         ip = msg_and_address[1][1]
@@ -71,6 +73,7 @@ def send_message(message):
     # also utf-8 encode that message
     send_sock.sendto(message.encode(msg_encoding), broadcast_address)
 
+# method for closing sockets and listeners
 def on_closing():
     send_sock.sendto(bytes(on_closing_payload, msg_encoding), broadcast_address)
     send_sock.close()

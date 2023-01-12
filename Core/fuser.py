@@ -1,3 +1,5 @@
+# todo consider renaming fuser to flowchatuser or user to be less ambiguous
+
 class FlowUser:                         # Constructor for the User Part
     id = 0
 

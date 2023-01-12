@@ -14,6 +14,7 @@ import Network.networkmanager
 
 class Guimanager:
 
+    # the following code defines the chat window in its entirety# #
     def __init__(self):
 
         # Chat Window
@@ -30,20 +31,23 @@ class Guimanager:
         # disallow window tearing
         self.gui.option_add('*tearOFF', FALSE)
 #;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        # Here are all widgets defined#
-        ###############################
+        # Widgets should be defined here #
+        ##################################
+
         # message to be sent | StringVar() helps with entry | TODO: look into StringVar more
         self.my_msg = StringVar()
+
         # message-box with scrollbars
         self.msg_box = Listbox(self.messages_frame, height=15, width=50)
 
         # scrollbar to scroll to past messages |TODO: autoscrolling
+
         # scrollbar at the bottom to view large messages
         self.scrollbar = Scrollbar(self.messages_frame, command=self.msg_box.yview)
         self.scrollbar_bottom = Scrollbar(self.messages_frame, orient='horizontal', command=self.msg_box.xview)
         self.msg_box.config(yscrollcommand=self.scrollbar.set, xscrollcommand=self.scrollbar_bottom.set)
 
-        # entry-box. What you write there becomes my_msg
+        # entry-box. What you write here is passed on as my_msg
         self.entry_box = Entry(self.gui, width=45, textvariable=self.my_msg)
         # send-button
         self.send_button = Button(self.gui, text="Send", command=self.send)
@@ -74,7 +78,7 @@ class Guimanager:
         # Places send-button to the right
         self.send_button.pack(side=RIGHT)
 
-        # Recieve new messages as a new thread
+        # receive new messages as a new thread
         recv = threading.Thread(target=self.poll_for_new_messages)
         recv.start()
 
@@ -83,15 +87,15 @@ class Guimanager:
         # Start mainloop
         self.gui.mainloop()
 
-    # Manages pressing the "X"-Button
+    # defines what happens when you close the window
     def on_closing(self, *args):
-        # Asks if you really want to quit
+        # confirmation box
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
-            # Close Window
+            # closes Window
             self.gui.destroy()
-            # Close sockets
+            # closes sockets
             Network.networkmanager.on_closing()
-            # Quit all threads
+            # stops all threads and shuts down the application on close
             os._exit(0)
 
     # sends message to other users and empties send box
