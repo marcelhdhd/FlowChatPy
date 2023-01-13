@@ -47,7 +47,7 @@ class Guimanager:
         self.menu_bar_main.add_cascade(label="Settings", menu=self.menu_bar_settings)
 
         self.gui.config(menu=self.menu_bar_main)
-#;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
         # Grid configuration
         self.gui.columnconfigure(0, weight=3)
         self.gui.columnconfigure(1, weight=0)
@@ -60,7 +60,8 @@ class Guimanager:
         self.widget_scrollbar.grid(row=0, column=1, sticky="nesw")
         self.widget_scrollbar_bottom = Scrollbar(self.gui, orient='horizontal', command=self.widget_msg_box.xview)
         self.widget_scrollbar_bottom.grid(row=1, column=0, sticky="nesw")
-        self.widget_msg_box.config(yscrollcommand=self.widget_scrollbar.set, xscrollcommand=self.widget_scrollbar_bottom.set)
+        self.widget_msg_box.config(yscrollcommand=self.widget_scrollbar.set,
+                                   xscrollcommand=self.widget_scrollbar_bottom.set)
 
         self.widget_my_msg = StringVar()
         self.widget_entry_box = Entry(self.gui, width=45, textvariable=self.widget_my_msg)
@@ -76,7 +77,6 @@ class Guimanager:
         self.recv.start()
         # Start mainloop
         self.gui.mainloop()
-#;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
         # TODO: This is for Debug only: Chat window always on top
         self.gui.wm_attributes("-topmost", 1)
@@ -119,4 +119,4 @@ class Guimanager:
                     self.widget_msg_box.see("end")
 
 
-g = Guimanager()          # Window is created as a new Object
+g = Guimanager()  # Window is created as a new Object

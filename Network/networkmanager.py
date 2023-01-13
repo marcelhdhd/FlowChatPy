@@ -1,6 +1,5 @@
 import socket
 import threading
-import json
 
 from datetime import datetime
 import messagepayload as payloads
