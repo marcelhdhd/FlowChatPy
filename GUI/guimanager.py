@@ -28,7 +28,7 @@ class Guimanager:
         self.gui.protocol("WM_DELETE_WINDOW", self.on_closing)
         # disallow window tearing
         self.gui.option_add('*tearOFF', FALSE)
-        self.gui.geometry("400x300")
+        self.gui.geometry("630x440")
         # frame widget on which other widgets are placed
         # Menu bar
         self.menu_bar_main = Menu(self.gui)
@@ -75,8 +75,6 @@ class Guimanager:
         # Recieve new messages as a new thread
         self.recv = threading.Thread(target=self.poll_for_new_messages)
         self.recv.start()
-        # Start mainloop
-        self.gui.mainloop()
 
         # TODO: This is for Debug only: Chat window always on top
         self.gui.wm_attributes("-topmost", 1)
