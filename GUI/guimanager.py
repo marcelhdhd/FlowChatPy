@@ -1,9 +1,9 @@
+import json
 import os
 import threading
 import time
 from tkinter import *
 from tkinter import messagebox
-from datetime import datetime
 
 import Network.networkmanager
 
@@ -107,16 +107,14 @@ class Guimanager:
             time.sleep(0.1)
             # In case new messages are found in the message_queue:
             if Network.networkmanager.message_queue:
-                for tuplemsg in Network.networkmanager.message_queue:
-                    # Save ip and message to variable
-                    self.ip, self.msg = tuplemsg
+                for messagepayload in Network.networkmanager.message_queue:
                     # Get current time and format message
-                    self.current_time = datetime.now().strftime("[%H:%M:%S] ")
-                    self.message = self.current_time + self.ip + " : " + self.msg
+                    payload = json.loads(messagepayload)
+                    message = payload["date"] + payload["name"] + " : " + payload["message"]
                     # Push message to message box
-                    self.widget_msg_box.insert(END, self.message)
+                    self.widget_msg_box.insert(END, message)
                     # remove message from message_queue
-                    Network.networkmanager.message_queue.remove(tuplemsg)
+                    Network.networkmanager.message_queue.remove(messagepayload)
                     # Scrolled automatisch zu einer neuen Nachricht
                     self.widget_msg_box.see("end")
 

@@ -1,5 +1,9 @@
 import socket
 import threading
+import json
+
+from datetime import datetime
+import messagepayload as payloads
 
 # basic networking code that allows messages to be passed over broadcast to other users as bitstream
 broadcast_ip = '255.255.255.255'
@@ -7,9 +11,6 @@ port_send = 24990
 port_recv = 25000
 broadcast_address = (broadcast_ip, port_recv)
 msg_encoding = "utf-8"
-msg_payload = "FlowChatDiscover on pc " + socket.gethostname() + " says HELLO"
-on_closing_payload = "User " + socket.gethostname() + " is exiting FlowChatPy"
-msg_broadcast = (msg_payload, msg_encoding)
 message_queue = []
 
 
@@ -46,8 +47,6 @@ def ready_send_socket():
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     # Bind socket to any ip and recv port
     sock.bind((hostname, port_send))
-    # broadcast hello
-    sock.sendto(bytes(msg_payload, msg_encoding), broadcast_address)
     return sock
 
 
@@ -58,26 +57,33 @@ def listen_handle_messages():
         # will write message and ip and port to variable
         msg_and_address = listen_sock.recvfrom(4096)
         # message will be utf-8 decoded
-        message = msg_and_address[0].decode(msg_encoding)
+        json = msg_and_address[0].decode(msg_encoding)
         # also save ip addr to display in GUI
         # todo change displayed addr to chosen username to allow recognition of users
-        addr = msg_and_address[1][0]
+        # addr = msg_and_address[1][0]
         # also save port for ?
-        ip = msg_and_address[1][1]
-        print("recieved message from: " + addr + ":" + message)
-        message_queue.append((addr, message))
+        # ip = msg_and_address[1][1]
+        print("recieved message "+json)
+        message_queue.append(json)
 
 
 # method for sending a message
 def send_message(message):
+    payloadmessage = payloads.Message()
+    payloadmessage.name = hostname # TODO Change name
+    payloadmessage.ip = hostname
+    payloadmessage.message = message
+    payloadmessage.date = datetime.now().strftime("[%H:%M:%S] ")
     # also utf-8 encode that message
-    send_sock.sendto(message.encode(msg_encoding), broadcast_address)
+    send_sock.sendto(payloadmessage.toJson().encode(msg_encoding), broadcast_address)
+
 
 # method for closing sockets and listeners
 def on_closing():
-    send_sock.sendto(bytes(on_closing_payload, msg_encoding), broadcast_address)
+    send_message("Bye")
     send_sock.close()
     listen_sock.close()
+
 
 # daemonize the listener so that one does not block the main thread
 def main():
@@ -86,6 +92,6 @@ def main():
 
 
 hostname = ip_finder()
-listen_sock = ready_listen_socket()
 send_sock = ready_send_socket()
+listen_sock = ready_listen_socket()
 main()
