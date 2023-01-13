@@ -4,6 +4,7 @@ import json
 class Message:
 
     def __init__(self):
+        self.type = "message"
         self.message = None
         self.date = None
         self.ip = None
@@ -16,6 +17,7 @@ class Message:
 class Command:
 
     def __init__(self):
+        self.type = "command"
         self.command = None
         self.date = None
         self.ip = None

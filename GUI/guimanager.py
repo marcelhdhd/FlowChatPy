@@ -108,13 +108,18 @@ class Guimanager:
             # In case new messages are found in the message_queue:
             if Network.networkmanager.message_queue:
                 for messagepayload in Network.networkmanager.message_queue:
-                    # Get current time and format message
+                    # Get message payload
                     payload = json.loads(messagepayload)
-                    message = payload["date"] + payload["name"] + " : " + payload["message"]
-                    # Push message to message box
-                    self.widget_msg_box.insert(END, message)
-                    # remove message from message_queue
-                    Network.networkmanager.message_queue.remove(messagepayload)
+                    payloadtype = payload["type"]
+                    if payloadtype == "message":
+                        # format the payload to print as a readable message format
+                        message = payload["date"] + payload["name"] + " : " + payload["message"]
+                        # Push message to message box
+                        self.widget_msg_box.insert(END, message)
+                        # remove message from message_queue
+                        Network.networkmanager.message_queue.remove(messagepayload)
+                    if payloadtype == "command":
+                        print("@TODO Command")
                     # Scrolled automatisch zu einer neuen Nachricht
                     self.widget_msg_box.see("end")
 

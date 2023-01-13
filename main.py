@@ -1,5 +1,4 @@
 import sys
-import threading
 
 import GUI.guimanager
 import Network.networkmanager
