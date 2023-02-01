@@ -44,8 +44,13 @@ class Guimanager(CTk):
         self.menu_bar_settings.add_cascade(label="Change Name")
         self.menu_bar_settings.add_separator()
         self.menu_bar_settings.add_command(label="lower")
+        # Menu bar Help tab
+        self.menu_bar_help = Menu(self.menu_bar_main, tearoff=0)
+        self.menu_bar_help.add_cascade(label='About')
+
         self.menu_bar_main.add_cascade(label="Start", menu=self.menu_bar_start)
         self.menu_bar_main.add_cascade(label="Settings", menu=self.menu_bar_settings)
+        self.menu_bar_main.add_cascade(label="Help", menu=self.menu_bar_help)
         self.gui.config(menu=self.menu_bar_main)
         # Grid configuration
         self.gui.columnconfigure(0, weight=3)
@@ -54,14 +59,7 @@ class Guimanager(CTk):
         self.gui.rowconfigure(1, weight=0, uniform="column")
         # Widget initialization
         self.widget_msg_box = CTkTextbox(master=self.gui, height=15, width=50, state="disabled")  # disabled first, so one can't write in the box
-        self.widget_msg_box.grid(row=0, rowspan=1, column=0, columnspan=2, sticky="nsew")
-        self.widget_scrollbar = CTkScrollbar(master=self.gui, command=self.widget_msg_box.yview)
-        self.widget_scrollbar.grid(row=0, column=2, sticky="ns")
-        self.widget_scrollbar_bottom = CTkScrollbar(master=self.gui, orientation='horizontal', command=self.widget_msg_box.xview)
-        self.widget_scrollbar_bottom.grid(row=1, column=0, columnspan=2, sticky="ew")
-        self.widget_msg_box.configure(yscrollcommand=self.widget_scrollbar.set,
-                                   xscrollcommand=self.widget_scrollbar_bottom.set)
-
+        self.widget_msg_box.grid(row=0, rowspan=1, column=0, columnspan=3, sticky="nsew")
         self.my_msg = StringVar()
         self.widget_entry_box = CTkEntry(master=self.gui, width=45, textvariable=self.my_msg)
         self.widget_entry_box.bind("<Return>", self.send)
