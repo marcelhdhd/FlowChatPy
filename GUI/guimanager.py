@@ -2,23 +2,25 @@ import json
 import os
 import threading
 import time
+import tkinter
 from tkinter import *
 from tkinter import messagebox
+from customtkinter import *
 
 import Network.networkmanager
 
 
 # In-depth tutorial for tkinter
 # https://tkdocs.com/tutorial/onepage.html
+class Guimanager(CTk):
 
-
-class Guimanager:
-
-    # the following code defines the chat window in its entirety# #
+    # the following code defines the main chat window in its entirety##
     def __init__(self):
+        super().__init__()
 
         # Chat Window
-        self.gui = Tk()
+        self.gui = CTk()
+        set_default_color_theme("dark-blue")  # themeeeeeeeeee
         ##################################
         # Here is the window initialized #
         ##################################
@@ -42,32 +44,29 @@ class Guimanager:
         self.menu_bar_settings.add_cascade(label="Change Name")
         self.menu_bar_settings.add_separator()
         self.menu_bar_settings.add_command(label="lower")
-
         self.menu_bar_main.add_cascade(label="Start", menu=self.menu_bar_start)
         self.menu_bar_main.add_cascade(label="Settings", menu=self.menu_bar_settings)
-
         self.gui.config(menu=self.menu_bar_main)
-
         # Grid configuration
         self.gui.columnconfigure(0, weight=3)
         self.gui.columnconfigure(1, weight=0)
         self.gui.rowconfigure(0, weight=3)
         self.gui.rowconfigure(1, weight=0, uniform="column")
         # Widget initialization
-        self.widget_msg_box = Listbox(self.gui, height=15, width=50)
-        self.widget_msg_box.grid(row=0, rowspan=1, column=0, columnspan=1, sticky="nsew")
-        self.widget_scrollbar = Scrollbar(self.gui, command=self.widget_msg_box.yview)
-        self.widget_scrollbar.grid(row=0, column=1, sticky="nesw")
-        self.widget_scrollbar_bottom = Scrollbar(self.gui, orient='horizontal', command=self.widget_msg_box.xview)
-        self.widget_scrollbar_bottom.grid(row=1, column=0, sticky="nesw")
-        self.widget_msg_box.config(yscrollcommand=self.widget_scrollbar.set,
+        self.widget_msg_box = CTkTextbox(master=self.gui, height=15, width=50, state="disabled")  # disabled first, so one can't write in the box
+        self.widget_msg_box.grid(row=0, rowspan=1, column=0, columnspan=2, sticky="nsew")
+        self.widget_scrollbar = CTkScrollbar(master=self.gui, command=self.widget_msg_box.yview)
+        self.widget_scrollbar.grid(row=0, column=2, sticky="ns")
+        self.widget_scrollbar_bottom = CTkScrollbar(master=self.gui, orientation='horizontal', command=self.widget_msg_box.xview)
+        self.widget_scrollbar_bottom.grid(row=1, column=0, columnspan=2, sticky="ew")
+        self.widget_msg_box.configure(yscrollcommand=self.widget_scrollbar.set,
                                    xscrollcommand=self.widget_scrollbar_bottom.set)
 
-        self.widget_my_msg = StringVar()
-        self.widget_entry_box = Entry(self.gui, width=45, textvariable=self.widget_my_msg)
+        self.my_msg = StringVar()
+        self.widget_entry_box = CTkEntry(master=self.gui, width=45, textvariable=self.my_msg)
         self.widget_entry_box.bind("<Return>", self.send)
         self.widget_entry_box.grid(row=2, column=0, sticky="ew")
-        self.widget_button_send = Button(self.gui, text="Send", command=self.send)
+        self.widget_button_send = CTkButton(self.gui, text="Send", command=self.send)
         self.widget_button_send.grid(row=2, column=1, columnspan=2)
 
         self.message_poll_state = True
@@ -95,9 +94,9 @@ class Guimanager:
     # sends message to other users and empties send box
     def send(self, *args):
         # sends the message to network, is also sent to networkmanager message_queue
-        Network.networkmanager.send_message(self.widget_my_msg.get())
+        Network.networkmanager.send_message(self.widget_entry_box.get())
         # Deletes what you wrote in the entry-box
-        self.widget_my_msg.set("")
+        self.widget_entry_box.delete(0, "end")
 
     # poll for new messages in networkmanager and push them to Chat box
     def poll_for_new_messages(self):
@@ -111,9 +110,14 @@ class Guimanager:
                     payloadtype = payload["type"]
                     if payloadtype == "message":
                         # format the payload to print as a readable message format
-                        message = payload["date"] + payload["name"] + " : " + payload["message"]
+                        message = payload["date"] + payload["name"] + " : " + payload["message"] + "\n"
+
+                        # make message box "state" "normal" to be editable
+                        self.widget_msg_box.configure(state="normal")
                         # Push message to message box
-                        self.widget_msg_box.insert(END, message)
+                        self.widget_msg_box.insert("end", message)
+                        # make message box "disabled" again to prevent manual editing
+                        self.widget_msg_box.configure(state="disabled")
                         # remove message from message_queue
                         Network.networkmanager.message_queue.remove(messagepayload)
                     if payloadtype == "command":
