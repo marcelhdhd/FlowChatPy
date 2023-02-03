@@ -6,5 +6,5 @@ A simple LAN-Chat Utility written in Python
 - customtkinter
 
 ## Installation
-Install the module with pip:
+Install the required module with pip:
 > pip3 install customtkinter
