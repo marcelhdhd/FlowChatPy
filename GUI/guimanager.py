@@ -5,9 +5,26 @@ import time
 import tkinter
 from tkinter import *
 from tkinter import messagebox
+
+import customtkinter
 from customtkinter import *
 
 import Network.networkmanager
+
+
+class NameChangeWindow(CTkToplevel):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.title("Change name")
+        self.testname = StringVar()
+        self.nameentrywidget = CTkEntry(self, textvariable=self.testname)
+        self.changenameButton = CTkButton(self, command=self.changeName)
+        self.nameentrywidget.pack()
+        self.changenameButton.pack()
+
+    def changeName(self):
+        print("nameentrywidget.get() = " + self.nameentrywidget.get())
+        Network.networkmanager.username = self.nameentrywidget.get()
 
 
 # In-depth tutorial for tkinter
@@ -15,8 +32,8 @@ import Network.networkmanager
 class Guimanager(CTk):
 
     # the following code defines the main chat window in its entirety##
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         # Chat Window
         self.gui = CTk()
@@ -41,7 +58,7 @@ class Guimanager(CTk):
         self.menu_bar_start.add_command(label="Close", command=self.on_closing)
         # Menu bar Settings tab
         self.menu_bar_settings = Menu(self.menu_bar_main, tearoff=0)
-        self.menu_bar_settings.add_cascade(label="Change Name")
+        self.menu_bar_settings.add_cascade(label="Change Name", command=self.open_namechange_window)
         self.menu_bar_settings.add_separator()
         self.menu_bar_settings.add_command(label="lower")
         # Menu bar Help tab
@@ -58,7 +75,8 @@ class Guimanager(CTk):
         self.gui.rowconfigure(0, weight=3)
         self.gui.rowconfigure(1, weight=0, uniform="column")
         # Widget initialization
-        self.widget_msg_box = CTkTextbox(master=self.gui, height=15, width=50, state="disabled")  # disabled first, so one can't write in the box
+        self.widget_msg_box = CTkTextbox(master=self.gui, height=15, width=50,
+                                         state="disabled")  # disabled first, so one can't write in the box
         self.widget_msg_box.grid(row=0, rowspan=1, column=0, columnspan=3, sticky="nsew")
         self.my_msg = StringVar()
         self.widget_entry_box = CTkEntry(master=self.gui, width=45, textvariable=self.my_msg)
@@ -68,6 +86,7 @@ class Guimanager(CTk):
         self.widget_button_send.grid(row=2, column=1, columnspan=2)
 
         self.message_poll_state = True
+        self.namechange_window = None
 
         # Recieve new messages as a new thread
         self.recv = threading.Thread(target=self.poll_for_new_messages)
@@ -88,6 +107,12 @@ class Guimanager(CTk):
             Network.networkmanager.on_closing()
             # stops all threads and shuts down the application on close
             os._exit(0)
+
+    def open_namechange_window(self):
+        if self.namechange_window is None or not self.namechange_window.winfo_exists():
+            self.namechange_window = NameChangeWindow(self)
+        else:
+            self.namechange_window.focus()
 
     # sends message to other users and empties send box
     def send(self, *args):
