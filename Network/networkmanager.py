@@ -11,6 +11,8 @@ port_recv = 25000
 broadcast_address = (broadcast_ip, port_recv)
 msg_encoding = "utf-8"
 message_queue = []
+username = None
+
 
 
 # method for finding local ip
@@ -69,7 +71,10 @@ def listen_handle_messages():
 # method for sending a message
 def send_message(message):
     payloadmessage = payloads.Message()
-    payloadmessage.name = hostname # TODO Change name
+    if username == None:
+         payloadmessage.name = hostname # TODO Change name
+    else:
+        payloadmessage.name = username
     payloadmessage.ip = hostname
     payloadmessage.message = message
     payloadmessage.date = datetime.now().strftime("[%H:%M:%S] ")

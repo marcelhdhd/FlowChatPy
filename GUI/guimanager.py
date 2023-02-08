@@ -10,6 +10,7 @@ from customtkinter import *
 import Network.networkmanager
 
 
+
 # In-depth tutorial for tkinter
 # https://tkdocs.com/tutorial/onepage.html
 class Guimanager(CTk):
@@ -41,7 +42,7 @@ class Guimanager(CTk):
         self.menu_bar_start.add_command(label="Close", command=self.on_closing)
         # Menu bar Settings tab
         self.menu_bar_settings = Menu(self.menu_bar_main, tearoff=0)
-        self.menu_bar_settings.add_cascade(label="Change Name")
+        self.menu_bar_settings.add_cascade(label="Change Name", command=self.opennewwindow)
         self.menu_bar_settings.add_separator()
         self.menu_bar_settings.add_command(label="lower")
         # Menu bar Help tab
@@ -89,6 +90,15 @@ class Guimanager(CTk):
             # stops all threads and shuts down the application on close
             os._exit(0)
 
+    def opennewwindow(self):
+        top = CTkToplevel()
+        name = None
+        nameeditwindow = CTkEntry(top, textvariable=name).pack()
+        changenameButton = CTkButton(top, command=lambda: self.changeName(nameeditwindow)).pack()
+        
+
+    def changeName(self, text):
+        Network.networkmanager.username = text;
     # sends message to other users and empties send box
     def send(self, *args):
         # sends the message to network, is also sent to networkmanager message_queue
