@@ -14,7 +14,6 @@ message_queue = []
 username = None
 
 
-
 # method for finding local ip
 def ip_finder():
     # Workaround needed to find a correct, working, local ip, because sometimes there are multiple interfaces
