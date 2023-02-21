@@ -1,19 +1,22 @@
 == To-Do's FlowChat
 
-= Userlist
+= Userlist -> Pascal
 - Nutzerliste
 - Auswahl username bei Start
 
-= Chaträume
+= Chaträume -> marcelhdhd
 - Auswahl Chatraum möglich
 - Anzeige Aktiver Chatraum
 
+@todo
 = Direktnachrichten
 - Schicken von Direktnachrichten möglich
 
+@todo
 = Generell / UI
 - "Antwort/Zitat" von Nachrichten
 - Schicken von Dokumenten
 - Close to Tray
 
+@todo
 - Ordentliches Help > About
