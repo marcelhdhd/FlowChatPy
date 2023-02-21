@@ -1,0 +1,19 @@
+== To-Do's FlowChat
+
+= Userlist
+- Nutzerliste
+- Auswahl username bei Start
+
+= Chaträume
+- Auswahl Chatraum möglich
+- Anzeige Aktiver Chatraum
+
+= Direktnachrichten
+- Schicken von Direktnachrichten möglich
+
+= Generell / UI
+- "Antwort/Zitat" von Nachrichten
+- Schicken von Dokumenten
+- Close to Tray
+
+- Ordentliches Help > About
