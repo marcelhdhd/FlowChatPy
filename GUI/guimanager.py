@@ -1,12 +1,8 @@
 import json
-import os
 import threading
 import time
-import tkinter
 from tkinter import *
 from tkinter import messagebox
-
-import customtkinter
 from customtkinter import *
 
 import Network.networkmanager
@@ -95,7 +91,7 @@ class Guimanager(CTk):
         self.recv.start()
 
         # TODO: This is for Debug only: Chat window always on top
-        self.gui.wm_attributes("-topmost", 1)
+        # self.gui.wm_attributes("-topmost", 1)
         # Start mainloop
         self.gui.mainloop()
 
