@@ -101,6 +101,7 @@ class Guimanager(CTk):
 
     # defines what happens when you close the window
     def on_closing(self, *args):
+        self.attributes('-topmost', True)
         # confirmation box
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
             # closes Window
