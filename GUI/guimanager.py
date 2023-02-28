@@ -11,7 +11,6 @@ from customtkinter import *
 
 import Network.networkmanager
 
-
 class NameChangeWindow(CTkToplevel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
