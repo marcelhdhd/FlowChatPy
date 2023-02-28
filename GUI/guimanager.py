@@ -10,6 +10,7 @@ import customtkinter
 from customtkinter import *
 
 import Network.networkmanager
+import changename
 from changename import NameChangeWindow
 
 
@@ -81,6 +82,7 @@ class Guimanager(CTk):
         # TODO: This is for Debug only: Chat window always on top
         self.gui.wm_attributes("-topmost", 1)
         # Start mainloop
+        changename.NameChangeWindow()
         self.gui.mainloop()
 
     # defines what happens when you close the window
@@ -93,6 +95,11 @@ class Guimanager(CTk):
             Network.networkmanager.on_closing()
             # stops all threads and shuts down the application on close
             os._exit(0)
+
+    def callNameChangeWindow(self):
+
+       self.gui =  changename.NameChangeWindow()
+
 
     def open_namechange_window(self):
         if self.namechange_window is None or not self.namechange_window.winfo_exists():
