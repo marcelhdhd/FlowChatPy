@@ -133,11 +133,20 @@ class Guimanager(CTk):
                 for messagepayload in Network.networkmanager.message_queue:
                     # Get message payload
                     payload = json.loads(messagepayload)
+                    if "type" in payload is None:
+                        continue
+
                     payloadtype = payload["type"]
-                    if payloadtype == "message":
+                    message = None
+
+                    if payloadtype == "customMessage":
+                        message = payload["message"] + "\n"
+
+                    if payloadtype == "userMessage":
                         # format the payload to print as a readable message format
                         message = payload["date"] + payload["name"] + " : " + payload["message"] + "\n"
 
+                    if message is not None:
                         # make message box "state" "normal" to be editable
                         self.widget_msg_box.configure(state="normal")
                         # Push message to message box
@@ -146,6 +155,7 @@ class Guimanager(CTk):
                         self.widget_msg_box.configure(state="disabled")
                         # remove message from message_queue
                         Network.networkmanager.message_queue.remove(messagepayload)
+
                     if payloadtype == "command":
                         print("@TODO Command")
                     # Scrolled automatisch zu einer neuen Nachricht
