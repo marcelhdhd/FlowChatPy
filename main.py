@@ -21,6 +21,5 @@ elif (len(sys.argv) == 2 and (sys.argv[1] == "--cli" or sys.argv[1] == "-c")):
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     #net = threading.Thread(target=Network.networkmanager, daemon=True)
-    Settings.settings
     Network.networkmanager
     GUI.guimanager
