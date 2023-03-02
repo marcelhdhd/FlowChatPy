@@ -6,8 +6,26 @@ from tkinter import messagebox
 from customtkinter import *
 
 import Network.networkmanager
-import changename
-from changename import NameChangeWindow
+
+class NameChangeWindow(CTkToplevel):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.title("Change name")
+        # title not showing due to window being to small
+        # maybe disable window buttons and add close button to popup
+        self.attributes('-topmost', True)
+        self.overrideredirect(True)
+        self.testname = StringVar()
+        self.nameentrywidget = CTkEntry(self, textvariable=self.testname)
+        self.changenameButton = CTkButton(self, text="Change name", command=self.changeName)
+        self.nameentrywidget.bind("<Return>", self.changeName)
+        self.nameentrywidget.pack()
+        self.changenameButton.pack()
+
+    def changeName(self, *args):
+        print("nameentrywidget.get() = " + self.nameentrywidget.get())
+        Network.networkmanager.username = self.nameentrywidget.get()
+        self.destroy()
 
 
 # In-depth tutorial for tkinter
@@ -78,7 +96,6 @@ class Guimanager(CTk):
         # TODO: This is for Debug only: Chat window always on top
         # self.gui.wm_attributes("-topmost", 1)
         # Start mainloop
-        changename.NameChangeWindow()
         self.gui.mainloop()
 
     # defines what happens when you close the window
@@ -92,11 +109,6 @@ class Guimanager(CTk):
             Network.networkmanager.on_closing()
             # stops all threads and shuts down the application on close
             os._exit(0)
-
-    def callNameChangeWindow(self):
-
-       self.gui =  changename.NameChangeWindow()
-
 
     def open_namechange_window(self):
         if self.namechange_window is None or not self.namechange_window.winfo_exists():
@@ -120,11 +132,20 @@ class Guimanager(CTk):
                 for messagepayload in Network.networkmanager.message_queue:
                     # Get message payload
                     payload = json.loads(messagepayload)
+                    if "type" in payload is None:
+                        continue
+
                     payloadtype = payload["type"]
-                    if payloadtype == "message":
+                    message = None
+
+                    if payloadtype == "customMessage":
+                        message = payload["message"] + "\n"
+
+                    if payloadtype == "userMessage":
                         # format the payload to print as a readable message format
                         message = payload["date"] + payload["name"] + " : " + payload["message"] + "\n"
 
+                    if message is not None:
                         # make message box "state" "normal" to be editable
                         self.widget_msg_box.configure(state="normal")
                         # Push message to message box
@@ -133,6 +154,7 @@ class Guimanager(CTk):
                         self.widget_msg_box.configure(state="disabled")
                         # remove message from message_queue
                         Network.networkmanager.message_queue.remove(messagepayload)
+
                     if payloadtype == "command":
                         print("@TODO Command")
                     # Scrolled automatisch zu einer neuen Nachricht

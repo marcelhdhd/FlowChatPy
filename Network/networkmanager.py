@@ -67,9 +67,9 @@ def listen_handle_messages():
         message_queue.append(json)
 
 
-# method for sending a message
+# method for sending a user specific message
 def send_message(message):
-    payloadmessage = payloads.Message()
+    payloadmessage = payloads.UserMessage()
     if username == None:
          payloadmessage.name = hostname # TODO Change name
     else:
@@ -80,6 +80,13 @@ def send_message(message):
     # also utf-8 encode that message
     send_sock.sendto(payloadmessage.toJson().encode(msg_encoding), broadcast_address)
 
+
+# method for sending custom messages
+def send_custom_message(message):
+    payloadMessage = payloads.CustomMessage()
+    payloadMessage.message = message
+    # also utf-8 encode that message
+    send_sock.sendto(payloadMessage.toJson().encode(msg_encoding), broadcast_address)
 
 # method for closing sockets and listeners
 def on_closing():
