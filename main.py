@@ -12,7 +12,6 @@ if len(sys.argv) == 1:
     is_GUI = True
 elif (len(sys.argv) == 2 and (sys.argv[1] == "--gui" or sys.argv[1] == "-g")):
     print("Starting FlowChatPy in GUI mode")
-
     is_GUI = True
 elif (len(sys.argv) == 2 and (sys.argv[1] == "--cli" or sys.argv[1] == "-c")):
     print("Starting FlowChatPy in CLI mode")
