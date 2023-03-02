@@ -2,7 +2,7 @@ import socket
 import threading
 
 from datetime import datetime
-import messagepayload as payloads
+from Core import messagepayload as payloads
 
 # basic networking code that allows messages to be passed over broadcast to other users as bitstream
 broadcast_ip = '255.255.255.255'
