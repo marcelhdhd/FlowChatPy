@@ -6,8 +6,7 @@ from tkinter import messagebox
 from customtkinter import *
 
 import Network.networkmanager
-import changename
-from changename import NameChangeWindow
+from GUI.changename import NameChangeWindow
 
 
 # In-depth tutorial for tkinter
@@ -70,7 +69,7 @@ class Guimanager(CTk):
 
         self.message_poll_state = True
         self.namechange_window = None
-        changename.NameChangeWindow()
+
         # Recieve new messages as a new thread
         self.recv = threading.Thread(target=self.poll_for_new_messages)
         self.recv.start()
