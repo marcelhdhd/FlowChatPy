@@ -6,23 +6,8 @@ from tkinter import messagebox
 from customtkinter import *
 
 import Network.networkmanager
-
-
-class NameChangeWindow(CTkToplevel):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.title("Change name")
-        self.attributes('-topmost', True)
-        self.testname = StringVar()
-        self.nameentrywidget = CTkEntry(self, textvariable=self.testname)
-        self.changenameButton = CTkButton(self, text="Confirm", command=self.changeName)
-        self.nameentrywidget.pack()
-        self.changenameButton.pack()
-
-    def changeName(self):
-        print("nameentrywidget.get() = " + self.nameentrywidget.get())
-        Network.networkmanager.username = self.nameentrywidget.get()
-        self.destroy()
+import changename
+from changename import NameChangeWindow
 
 
 # In-depth tutorial for tkinter
@@ -93,6 +78,7 @@ class Guimanager(CTk):
         # TODO: This is for Debug only: Chat window always on top
         # self.gui.wm_attributes("-topmost", 1)
         # Start mainloop
+        changename.NameChangeWindow()
         self.gui.mainloop()
 
     # defines what happens when you close the window
@@ -106,6 +92,11 @@ class Guimanager(CTk):
             Network.networkmanager.on_closing()
             # stops all threads and shuts down the application on close
             os._exit(0)
+
+    def callNameChangeWindow(self):
+
+       self.gui =  changename.NameChangeWindow()
+
 
     def open_namechange_window(self):
         if self.namechange_window is None or not self.namechange_window.winfo_exists():
