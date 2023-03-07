@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1020</width>
-    <height>667</height>
+    <width>1026</width>
+    <height>675</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -30,20 +30,23 @@
     <item row="0" column="0">
      <layout class="QGridLayout" name="gridLayout">
       <item row="1" column="0" colspan="2">
-       <widget class="QLineEdit" name="lineEdit"/>
+       <widget class="QLineEdit" name="userChat"/>
       </item>
       <item row="1" column="2">
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="chatButton">
         <property name="text">
          <string>Senden</string>
+        </property>
+        <property name="autoDefault">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
       <item row="0" column="1" colspan="2">
-       <widget class="QListView" name="listView"/>
+       <widget class="QListView" name="userList"/>
       </item>
       <item row="0" column="0">
-       <widget class="QTextEdit" name="textEdit"/>
+       <widget class="QTextEdit" name="chatBox"/>
       </item>
      </layout>
     </item>
@@ -54,7 +57,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1020</width>
+     <width>1026</width>
      <height>26</height>
     </rect>
    </property>
@@ -67,7 +70,7 @@
     <property name="title">
      <string>Einstellung</string>
     </property>
-    <addaction name="actionNamne_ndern"/>
+    <addaction name="changeName"/>
    </widget>
    <widget class="QMenu" name="menuBeenden">
     <property name="title">
@@ -78,8 +81,8 @@
     <property name="title">
      <string>Ansicht</string>
     </property>
-    <addaction name="actionFenster_Fokusieren"/>
-    <addaction name="actionDunkel_Ansicht"/>
+    <addaction name="focusWindow"/>
+    <addaction name="darkMode"/>
    </widget>
    <addaction name="menuDatei"/>
    <addaction name="menuAnsicht"/>
@@ -87,17 +90,23 @@
    <addaction name="menuBeenden"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionNamne_ndern">
+  <action name="changeName">
    <property name="text">
     <string>Namen ändern</string>
    </property>
   </action>
-  <action name="actionFenster_Fokusieren">
+  <action name="focusWindow">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Fenster Fokusieren</string>
    </property>
   </action>
-  <action name="actionDunkel_Ansicht">
+  <action name="darkMode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Dunkel Ansicht</string>
    </property>
