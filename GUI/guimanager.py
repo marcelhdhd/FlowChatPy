@@ -6,7 +6,6 @@ from tkinter import messagebox
 from customtkinter import *
 
 import Network.networkmanager
-import changename
 from GUI.changename import NameChangeWindow
 
 
