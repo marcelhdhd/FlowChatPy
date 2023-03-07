@@ -13,7 +13,7 @@ class NameChangeWindow(CTkToplevel):
 
         self.testname = StringVar()
         self.nameentrywidget = CTkEntry(self, textvariable=self.testname)
-        self.changenameButton = CTkButton(self, text="Change name", command=self.checkifNameisNone, state='disabled')
+        self.changenameButton = CTkButton(self, text="Change name", command=self.checkifNameisNone)
         self.nameentrywidget.bind("<Return>", self.changeName)
         self.nameentrywidget.pack()
         self.changenameButton.pack()
