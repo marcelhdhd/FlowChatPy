@@ -1,5 +1,6 @@
 import socket
 import threading
+import re
 
 from datetime import datetime
 from Core import messagepayload as payloads
@@ -75,11 +76,41 @@ def send_message(message):
     else:
         payloadmessage.name = username
     payloadmessage.ip = hostname
-    payloadmessage.message = message
+    payloadmessage.message = check_emote(message)
     payloadmessage.date = datetime.now().strftime("[%H:%M:%S] ")
     # also utf-8 encode that message
     send_sock.sendto(payloadmessage.toJson().encode(msg_encoding), broadcast_address)
 
+def check_emote(message):
+    emotes = re.findall(r":.*?:", message)
+    for emote_ex in emotes:
+        message = re.sub(emote_ex, check_which_emote(emote_ex), message)
+    return message
+
+def check_which_emote(emote_ex):
+    emote = re.sub(":", "", emote_ex)
+    if emote == "smile":
+        return "😊"
+    elif emote == "crylaugh":
+        return "😂"
+    elif emote == "cool":
+        return "😎"
+    elif emote == "think":
+        return "🤔"
+    elif emote == "smirk":
+        return "😏"
+    elif emote == "sad":
+        return "🙁"
+    elif emote == "yawn":
+        return "🥱"
+    elif emote == "cry":
+        return "😭"
+    elif emote == "fear":
+        return "😱"
+    elif emote == "clown":
+        return "🤡"
+    else:
+        return emote_ex
 
 # method for sending custom messages
 def send_custom_message(message):

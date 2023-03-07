@@ -13,7 +13,7 @@ class NameChangeWindow(CTkToplevel):
 
         self.testname = StringVar()
         self.nameentrywidget = CTkEntry(self, textvariable=self.testname)
-        self.changenameButton = CTkButton(self, text="Change name", command=self.changeName)
+        self.changenameButton = CTkButton(self, text="Change name", command=self.checkifNameisNone, state='disabled')
         self.nameentrywidget.bind("<Return>", self.changeName)
         self.nameentrywidget.pack()
         self.changenameButton.pack()
@@ -22,4 +22,13 @@ class NameChangeWindow(CTkToplevel):
         print("nameentrywidget.get() = " + self.nameentrywidget.get())
         Network.networkmanager.username = self.nameentrywidget.get()
         self.destroy()
+
+
+    def checkifNameisNone(self):
+        if (self.testname == None):
+            self.changenameButton.configure(state='disabled')
+        else:
+            self.changenameButton.configure(state='enabled')
+            self.changeName()
+
 
