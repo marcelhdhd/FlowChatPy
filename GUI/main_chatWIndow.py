@@ -7,6 +7,7 @@
 
 
 from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6.QtWidgets import QLineEdit
 
 import Network.networkmanager
 
@@ -69,6 +70,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuEinstellung.menuAction())
         self.menubar.addAction(self.menuBeenden.menuAction())
         self.chatButton.clicked.connect(self.send)
+        self.userChat.returnPressed.connect(self.send)
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
