@@ -10,17 +10,22 @@ import threading
 import time
 
 from PyQt6 import QtCore, QtGui, QtWidgets
-from PyQt6.QtWidgets import QLineEdit
+from PyQt6.QtGui import QAction
+from PyQt6.QtWidgets import QWidget, QApplication, QMessageBox, QMainWindow
 
 import Network.networkmanager
 
 
-class Ui_MainWindow(object):
+class Ui_MainWindow(QWidget):
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1026, 675)
         MainWindow.setMinimumSize(QtCore.QSize(838, 0))
         MainWindow.setMaximumSize(QtCore.QSize(4048, 4048))
+
+        MainWindow.closeEvent = self.closeEvent
+
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout_3 = QtWidgets.QGridLayout(self.centralwidget)
@@ -72,14 +77,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuDatei.menuAction())
         self.menubar.addAction(self.menuAnsicht.menuAction())
         self.menubar.addAction(self.menuEinstellung.menuAction())
-        #self.menubar.addAction(self.menuBeenden.menuAction())
-
-        # Menu bar Main tab
-        #self.menu_bar_start = Menu(self.menu_bar_main, tearoff=0)
-        #self.menu_bar_start.add_cascade(label="upper")
-        #self.menu_bar_start.add_separator()
-        #self.menu_bar_start.add_command(label="Close", command=self.on_closing)
-
+        self.menubar.addAction(self.menuBeenden.menuAction())
 
         self.chatButton.clicked.connect(self.send)
         self.userChat.returnPressed.connect(self.send)
@@ -89,16 +87,21 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     # defines what happens when you close the window
-    def on_closing(self, *args):
-        self.attributes('-topmost', True)
+    def closeEvent(self, event):
+        qmsgbox = QMessageBox()
+        reply = qmsgbox.question(MainWindow,  "Window Close", "Do you want to quit?",
+                                 qmsgbox.standardButtons().Yes, qmsgbox.standardButtons().No)
         # confirmation box
-        if QtWidgets.QMessageBox.askokcancel("Quit", "Do you want to quit?"):
+        if reply == qmsgbox.standardButtons().Yes:
+            event.accept()
             # closes Window
             self.gui.destroy()
             # closes sockets
             Network.networkmanager.on_closing()
             # stops all threads and shuts down the application on close
             os._exit(0)
+        else:
+            event.ignore()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -149,8 +152,8 @@ class Ui_MainWindow(object):
 
 if __name__ == "__main__":
     import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
+    app = QApplication(sys.argv)
+    MainWindow = QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
