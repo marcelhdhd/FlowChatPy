@@ -92,6 +92,7 @@ class Ui_MainWindow(object):
 
     def send(self, *args):
         Network.networkmanager.send_message(self.userChat.text())
+        self.userChat.setText("")
 
     def poll_for_new_messages(self):
         while True:
