@@ -78,6 +78,18 @@ class Ui_MainWindow(object):
         self.recv.start()
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+    # defines what happens when you close the window
+    def on_closing(self, *args):
+        self.attributes('-topmost', True)
+        # confirmation box
+        if QtWidgets.QMessageBox.askokcancel("Quit", "Do you want to quit?"):
+            # closes Window
+            self.gui.destroy()
+            # closes sockets
+            Network.networkmanager.on_closing()
+            # stops all threads and shuts down the application on close
+            os._exit(0)
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "FlowChatPy"))
