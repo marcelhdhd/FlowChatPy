@@ -8,6 +8,8 @@
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
+import Network.networkmanager
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -66,7 +68,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuAnsicht.menuAction())
         self.menubar.addAction(self.menuEinstellung.menuAction())
         self.menubar.addAction(self.menuBeenden.menuAction())
-
+        self.chatButton.clicked.connect(self.send)
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -81,6 +83,9 @@ class Ui_MainWindow(object):
         self.changeName.setText(_translate("MainWindow", "Namen ändern"))
         self.focusWindow.setText(_translate("MainWindow", "Fenster Fokusieren"))
         self.darkMode.setText(_translate("MainWindow", "Dunkel Ansicht"))
+
+    def send(self, *args):
+        Network.networkmanager.send_message(self.userChat.text())
 
 
 if __name__ == "__main__":

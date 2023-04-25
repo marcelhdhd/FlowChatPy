@@ -1,7 +1,7 @@
 import os
 import sys
 
-import GUI.guimanager
+import GUI.main_chatWIndow
 import Network.networkmanager
 from Settings.settings import Settings
 
@@ -23,4 +23,4 @@ if __name__ == '__main__':
 
     #net = threading.Thread(target=Network.networkmanager, daemon=True)
     Network.networkmanager
-    GUI.guimanager
+    GUI.main_chatWIndow.Ui_MainWindow

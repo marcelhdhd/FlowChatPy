@@ -8,6 +8,9 @@
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
+import Network.networkmanager
+import main_chatWIndow
+
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
@@ -36,6 +39,7 @@ class Ui_Dialog(object):
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.ok_button = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
         self.ok_button.setObjectName("ok_button")
+        self.ok_button.clicked.connect(self.changeName)
         self.horizontalLayout.addWidget(self.ok_button)
         self.cancel_Button = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
         self.cancel_Button.setObjectName("cancel_Button")
@@ -46,10 +50,19 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        Dialog.setWindowTitle(_translate("Dialog", "Namen eingeben"))
         self.changeNameLabel.setText(_translate("Dialog", "Enter your Nickname"))
         self.ok_button.setText(_translate("Dialog", "OK"))
         self.cancel_Button.setText(_translate("Dialog", "cancel"))
+
+    def changeName(self):
+        Network.networkmanager.username = self.nickname_Input_field.text()
+        Dialog = QtWidgets.QDialog()
+        newwindow = main_chatWIndow.Ui_MainWindow()
+        ui = newwindow
+        ui.setupUi(Dialog)
+        self.show()
+
 
 
 if __name__ == "__main__":
