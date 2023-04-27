@@ -13,7 +13,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QWidget, QApplication, QMessageBox, QMainWindow
 
-import Network.networkmanager
+import net.networkmanager
 
 
 class Ui_MainWindow(QWidget):
@@ -98,7 +98,7 @@ class Ui_MainWindow(QWidget):
             # closes Window
             self.gui.destroy()
             # closes sockets
-            Network.networkmanager.on_closing()
+            net.networkmanager.on_closing()
             # stops all threads and shuts down the application on close
             os._exit(0)
         else:
@@ -117,15 +117,15 @@ class Ui_MainWindow(QWidget):
         self.darkMode.setText(_translate("MainWindow", "Dunkel Ansicht"))
 
     def send(self, *args):
-        Network.networkmanager.send_message(self.userChat.text())
+        net.networkmanager.send_message(self.userChat.text())
         self.userChat.setText("")
 
     def poll_for_new_messages(self):
         while True:
             time.sleep(0.1)
             # In case new messages are found in the message_queue:
-            if Network.networkmanager.message_queue:
-                for messagepayload in Network.networkmanager.message_queue:
+            if net.networkmanager.message_queue:
+                for messagepayload in net.networkmanager.message_queue:
                     # Get message payload
                     payload = json.loads(messagepayload)
                     if "type" in payload is None:
@@ -145,7 +145,7 @@ class Ui_MainWindow(QWidget):
                         # make message box "state" "normal" to be editable
                         self.chatBox.insertPlainText( message)
                         # remove message from message_queue
-                        Network.networkmanager.message_queue.remove(messagepayload)
+                        net.networkmanager.message_queue.remove(messagepayload)
 
                     if payloadtype == "command":
                         print("@TODO Command")

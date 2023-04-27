@@ -8,7 +8,7 @@
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-import Network.networkmanager
+import net.networkmanager
 import main_chatWIndow
 
 
@@ -56,7 +56,7 @@ class Ui_Dialog(object):
         self.cancel_Button.setText(_translate("Dialog", "cancel"))
 
     def changeName(self):
-        Network.networkmanager.username = self.nickname_Input_field.text()
+        net.networkmanager.username = self.nickname_Input_field.text()
         Dialog = QtWidgets.QDialog()
         newwindow = main_chatWIndow.Ui_MainWindow()
         ui = newwindow
