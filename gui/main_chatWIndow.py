@@ -9,9 +9,12 @@ import os
 import threading
 import time
 
+
+
 from PyQt6 import QtCore, QtGui, QtWidgets
-from PyQt6.QtGui import QAction
-from PyQt6.QtWidgets import QWidget, QApplication, QMessageBox, QMainWindow
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QAction, QPalette, QColor
+from PyQt6.QtWidgets import QWidget, QApplication, QMessageBox, QMainWindow, QStyle
 
 import net.networkmanager
 
@@ -28,25 +31,33 @@ class Ui_MainWindow(QWidget):
 
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+
         self.gridLayout_3 = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout_3.setObjectName("gridLayout_3")
+
         self.gridLayout = QtWidgets.QGridLayout()
         self.gridLayout.setObjectName("gridLayout")
+
         self.userChat = QtWidgets.QLineEdit(parent=self.centralwidget)
         self.userChat.setObjectName("userChat")
         self.gridLayout.addWidget(self.userChat, 1, 0, 1, 2)
+        self.userChat.returnPressed.connect(self.send)
+
         self.chatButton = QtWidgets.QPushButton(parent=self.centralwidget)
         self.chatButton.setAutoDefault(True)
         self.chatButton.setObjectName("chatButton")
         self.gridLayout.addWidget(self.chatButton, 1, 2, 1, 1)
+        self.chatButton.clicked.connect(self.send)
+
         self.userList = QtWidgets.QListView(parent=self.centralwidget)
         self.userList.setObjectName("userList")
         self.gridLayout.addWidget(self.userList, 0, 1, 1, 2)
-        self.chatBox = QtWidgets.QTextEdit(parent=self.centralwidget)
-        self.chatBox.setReadOnly(True)
+
+        self.chatBox = QtWidgets.QTextBrowser(parent=self.centralwidget)
         self.chatBox.setObjectName("chatBox")
         self.gridLayout.addWidget(self.chatBox, 0, 0, 1, 1)
         self.gridLayout_3.addLayout(self.gridLayout, 0, 0, 1, 1)
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(parent=MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1026, 26))
@@ -60,29 +71,34 @@ class Ui_MainWindow(QWidget):
         self.menuAnsicht = QtWidgets.QMenu(parent=self.menubar)
         self.menuAnsicht.setObjectName("menuAnsicht")
         MainWindow.setMenuBar(self.menubar)
+
         self.statusbar = QtWidgets.QStatusBar(parent=MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+
         self.changeName = QtGui.QAction(parent=MainWindow)
         self.changeName.setObjectName("changeName")
+
         self.focusWindow = QtGui.QAction(parent=MainWindow)
         self.focusWindow.setCheckable(True)
         self.focusWindow.setObjectName("focusWindow")
+
         self.darkMode = QtGui.QAction(parent=MainWindow)
         self.darkMode.setCheckable(True)
         self.darkMode.setObjectName("darkMode")
+
         self.menuEinstellung.addAction(self.changeName)
         self.menuAnsicht.addAction(self.focusWindow)
         self.menuAnsicht.addAction(self.darkMode)
+        self.darkMode.triggered.connect(self.change_theme)
 
         self.menubar.addAction(self.menuDatei.menuAction())
         self.menubar.addAction(self.menuAnsicht.menuAction())
         self.menubar.addAction(self.menuEinstellung.menuAction())
         self.menubar.addAction(self.menuBeenden.menuAction())
 
-        self.chatButton.clicked.connect(self.send)
-        self.userChat.returnPressed.connect(self.send)
         self.retranslateUi(MainWindow)
+
         self.recv = threading.Thread(target=self.poll_for_new_messages)
         self.recv.start()
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -120,6 +136,21 @@ class Ui_MainWindow(QWidget):
         net.networkmanager.send_message(self.userChat.text())
         self.userChat.setText("")
 
+    def change_theme(self):
+        palette = QPalette()
+        if (self.darkMode.isChecked()):
+            palette = QPalette()
+            palette.setColor(QPalette.ColorRole.Window, Qt.GlobalColor.black)
+            palette.setColor(QPalette.ColorRole.Base, Qt.GlobalColor.darkGray)
+            palette.setColor(QPalette.ColorRole.Text, QColor(47, 51, 175))
+            palette.setColor(QPalette.ColorRole.ButtonText, Qt.GlobalColor.black)
+        else:
+            palette.setColor(QPalette.ColorRole.Window, Qt.GlobalColor.lightGray)
+            palette.setColor(QPalette.ColorRole.Base, Qt.GlobalColor.white)
+            palette.setColor(QPalette.ColorRole.Text, Qt.GlobalColor.black)
+            palette.setColor(QPalette.ColorRole.ButtonText, Qt.GlobalColor.black)
+        app.setPalette(palette)
+
     def poll_for_new_messages(self):
         while True:
             time.sleep(0.1)
@@ -141,9 +172,8 @@ class Ui_MainWindow(QWidget):
                         # format the payload to print as a readable message format
                         message = payload["date"] + payload["name"] + " : " + payload["message"] + "\n"
 
-                    if message is not None:
-                        # make message box "state" "normal" to be editable
-                        self.chatBox.insertPlainText( message)
+                    if message is not None and payload["message"] is not "":
+                        self.chatBox.insertPlainText(message)
                         # remove message from message_queue
                         net.networkmanager.message_queue.remove(messagepayload)
 
@@ -154,6 +184,7 @@ class Ui_MainWindow(QWidget):
 if __name__ == "__main__":
     import sys
     app = QApplication(sys.argv)
+
     MainWindow = QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
