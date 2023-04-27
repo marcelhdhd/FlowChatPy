@@ -43,6 +43,7 @@ class Ui_MainWindow(QWidget):
         self.userList.setObjectName("userList")
         self.gridLayout.addWidget(self.userList, 0, 1, 1, 2)
         self.chatBox = QtWidgets.QTextEdit(parent=self.centralwidget)
+        self.chatBox.setReadOnly(True)
         self.chatBox.setObjectName("chatBox")
         self.gridLayout.addWidget(self.chatBox, 0, 0, 1, 1)
         self.gridLayout_3.addLayout(self.gridLayout, 0, 0, 1, 1)
