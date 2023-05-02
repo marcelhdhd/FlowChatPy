@@ -13,7 +13,7 @@ import time
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QAction, QPalette, QColor
+from PyQt6.QtGui import QAction, QPalette, QColor, QTextCursor
 from PyQt6.QtWidgets import QWidget, QApplication, QMessageBox, QMainWindow, QStyle
 
 import net.networkmanager
@@ -172,8 +172,9 @@ class Ui_MainWindow(QWidget):
                         # format the payload to print as a readable message format
                         message = payload["date"] + payload["name"] + " : " + payload["message"] + "\n"
 
-                    if message is not None and payload["message"] is not "":
-                        self.chatBox.insertPlainText(message)
+                    if message is not None and payload["message"] != "":
+                        self.chatBox.append(message)
+                        self.chatBox.moveCursor(QTextCursor.MoveOperation.End)
                         # remove message from message_queue
                         net.networkmanager.message_queue.remove(messagepayload)
 
