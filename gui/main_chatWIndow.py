@@ -130,7 +130,7 @@ class Ui_MainWindow(QWidget):
         self.menuAnsicht.setTitle(_translate("MainWindow", "Ansicht"))
         self.changeName.setText(_translate("MainWindow", "Namen ändern"))
         self.focusWindow.setText(_translate("MainWindow", "Fenster Fokusieren"))
-        self.darkMode.setText(_translate("MainWindow", "Dunkel Ansicht"))
+        self.darkMode.setText(_translate("MainWindow", "Darkmode"))
 
     def send(self, *args):
         net.networkmanager.send_message(self.userChat.text())
@@ -140,9 +140,9 @@ class Ui_MainWindow(QWidget):
         palette = QPalette()
         if (self.darkMode.isChecked()):
             palette = QPalette()
-            palette.setColor(QPalette.ColorRole.Window, Qt.GlobalColor.black)
-            palette.setColor(QPalette.ColorRole.Base, Qt.GlobalColor.darkGray)
-            palette.setColor(QPalette.ColorRole.Text, QColor(47, 51, 175))
+            palette.setColor(QPalette.ColorRole.Window, QColor(48, 48, 45))
+            palette.setColor(QPalette.ColorRole.Base, Qt.GlobalColor.black)
+            palette.setColor(QPalette.ColorRole.Text, QColor(0, 255, 0))
             palette.setColor(QPalette.ColorRole.ButtonText, Qt.GlobalColor.black)
         else:
             palette.setColor(QPalette.ColorRole.Window, Qt.GlobalColor.lightGray)

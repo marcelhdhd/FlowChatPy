@@ -1,1 +1,2 @@
 customtkinter
+PyQt6~=6.5.0
