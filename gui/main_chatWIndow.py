@@ -9,14 +9,15 @@ import os
 import threading
 import time
 
-
-
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QAction, QPalette, QColor, QTextCursor
-from PyQt6.QtWidgets import QWidget, QApplication, QMessageBox, QMainWindow, QStyle
+from PyQt6.QtGui import QPalette, QColor, QTextCursor
+from PyQt6.QtWidgets import QWidget, QApplication, QMessageBox, QMainWindow
 
+import Settings.settings
 import net.networkmanager
+from GUI import changeNameWindow
+from Settings import settings
 
 
 class Ui_MainWindow(QWidget):
@@ -78,6 +79,7 @@ class Ui_MainWindow(QWidget):
 
         self.changeName = QtGui.QAction(parent=MainWindow)
         self.changeName.setObjectName("changeName")
+        self.changeName.triggered.connect(self.openNameChangeWindow)
 
         self.focusWindow = QtGui.QAction(parent=MainWindow)
         self.focusWindow.setCheckable(True)
@@ -86,11 +88,11 @@ class Ui_MainWindow(QWidget):
         self.darkMode = QtGui.QAction(parent=MainWindow)
         self.darkMode.setCheckable(True)
         self.darkMode.setObjectName("darkMode")
+        self.darkMode.triggered.connect(self.change_theme)
 
         self.menuEinstellung.addAction(self.changeName)
         self.menuAnsicht.addAction(self.focusWindow)
         self.menuAnsicht.addAction(self.darkMode)
-        self.darkMode.triggered.connect(self.change_theme)
 
         self.menubar.addAction(self.menuDatei.menuAction())
         self.menubar.addAction(self.menuAnsicht.menuAction())
@@ -98,6 +100,8 @@ class Ui_MainWindow(QWidget):
         self.menubar.addAction(self.menuBeenden.menuAction())
 
         self.retranslateUi(MainWindow)
+
+        self.change_theme_color()
 
         self.recv = threading.Thread(target=self.poll_for_new_messages)
         self.recv.start()
@@ -111,14 +115,15 @@ class Ui_MainWindow(QWidget):
         # confirmation box
         if reply == qmsgbox.standardButtons().Yes:
             event.accept()
-            # closes Window
-            self.gui.destroy()
             # closes sockets
             net.networkmanager.on_closing()
             # stops all threads and shuts down the application on close
             os._exit(0)
         else:
             event.ignore()
+
+    def openNameChangeWindow(self):
+        changeNameWindow.ChangeNameWindow = changeNameWindow.ChangeNameWindow()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -136,15 +141,23 @@ class Ui_MainWindow(QWidget):
         net.networkmanager.send_message(self.userChat.text())
         self.userChat.setText("")
 
-    def change_theme(self):
+    def change_theme(self, changedSettings):
+        if self.darkMode.isChecked():
+            settings.settingsInstance.dark_mode = True
+        else:
+            settings.settingsInstance.dark_mode = False
+        settings.settingsInstance.save()
+        self.change_theme_color()
+
+    def change_theme_color(self):
         palette = QPalette()
-        if (self.darkMode.isChecked()):
-            palette = QPalette()
+        if settings.settingsInstance.dark_mode:
             palette.setColor(QPalette.ColorRole.Window, QColor(48, 48, 45))
             palette.setColor(QPalette.ColorRole.Base, Qt.GlobalColor.black)
             palette.setColor(QPalette.ColorRole.Text, QColor(0, 255, 0))
             palette.setColor(QPalette.ColorRole.ButtonText, Qt.GlobalColor.black)
         else:
+            palette = QPalette()
             palette.setColor(QPalette.ColorRole.Window, Qt.GlobalColor.lightGray)
             palette.setColor(QPalette.ColorRole.Base, Qt.GlobalColor.white)
             palette.setColor(QPalette.ColorRole.Text, Qt.GlobalColor.black)
@@ -166,21 +179,22 @@ class Ui_MainWindow(QWidget):
                     message = None
 
                     if payloadtype == "customMessage":
-                        message = payload["message"] + "\n"
+                        message = payload["message"]
 
                     if payloadtype == "userMessage":
                         # format the payload to print as a readable message format
-                        message = payload["date"] + payload["name"] + " : " + payload["message"] + "\n"
+                        message = payload["date"] + payload["name"] + " : " + payload["message"]
 
                     if message is not None and payload["message"] != "":
                         self.chatBox.append(message)
+                        # Scrolled automatisch zu einer neuen Nachricht
                         self.chatBox.moveCursor(QTextCursor.MoveOperation.End)
-                        # remove message from message_queue
-                        net.networkmanager.message_queue.remove(messagepayload)
+
+                    # remove message from message_queue
+                    net.networkmanager.message_queue.remove(messagepayload)
 
                     if payloadtype == "command":
                         print("@TODO Command")
-                    # Scrolled automatisch zu einer neuen Nachricht
 
 if __name__ == "__main__":
     import sys

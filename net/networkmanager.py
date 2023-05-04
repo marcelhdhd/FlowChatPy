@@ -3,6 +3,8 @@ import threading
 import re
 
 from datetime import datetime
+
+from Settings import settings
 from net import messagepayload as payloads
 
 # basic networking code that allows messages to be passed over broadcast to other users as bitstream
@@ -12,7 +14,6 @@ port_recv = 25000
 broadcast_address = (broadcast_ip, port_recv)
 msg_encoding = "utf-8"
 message_queue = []
-username = None
 
 
 # method for finding local ip
@@ -64,28 +65,30 @@ def listen_handle_messages():
         # addr = msg_and_address[1][0]
         # also save port for ?
         # ip = msg_and_address[1][1]
-        print("recieved message "+json)
+        print("recieved message " + json)
         message_queue.append(json)
 
 
 # method for sending a user specific message
 def send_message(message):
     payloadmessage = payloads.UserMessage()
-    if username == None:
-         payloadmessage.name = hostname # TODO Change name
+    if settings.settingsInstance.user_name is None:
+        payloadmessage.name = hostname
     else:
-        payloadmessage.name = username
+        payloadmessage.name = settings.settingsInstance.user_name
     payloadmessage.ip = hostname
     payloadmessage.message = check_emote(message)
     payloadmessage.date = datetime.now().strftime("[%H:%M:%S] ")
     # also utf-8 encode that message
     send_sock.sendto(payloadmessage.toJson().encode(msg_encoding), broadcast_address)
 
+
 def check_emote(message):
     emotes = re.findall(r":.*?:", message)
     for emote_ex in emotes:
         message = re.sub(emote_ex, check_which_emote(emote_ex), message)
     return message
+
 
 def check_which_emote(emote_ex):
     emote = re.sub(":", "", emote_ex)
@@ -112,12 +115,14 @@ def check_which_emote(emote_ex):
     else:
         return emote_ex
 
+
 # method for sending custom messages
 def send_custom_message(message):
     payloadMessage = payloads.CustomMessage()
     payloadMessage.message = message
     # also utf-8 encode that message
     send_sock.sendto(payloadMessage.toJson().encode(msg_encoding), broadcast_address)
+
 
 # method for closing sockets and listeners
 def on_closing():
