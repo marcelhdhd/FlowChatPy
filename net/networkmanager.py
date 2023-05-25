@@ -4,7 +4,7 @@ import re
 
 from datetime import datetime
 
-from Settings import settings
+from settings import settings
 from net import messagepayload as payloads
 
 # basic networking code that allows messages to be passed over broadcast to other users as bitstream

@@ -1,10 +1,12 @@
 import unittest
 import ipaddress
-import networkmanager
 import tracemalloc
+
+from net import networkmanager
 
 # more debug information
 tracemalloc.start()
+
 
 class TestNetwork(unittest.TestCase):
 
@@ -14,12 +16,12 @@ class TestNetwork(unittest.TestCase):
 
     def test_ready_listen_socket(self):
         networkmanager.ready_listen_socket().close()
-        self.assertTrue(True) ## Wie testet man einen Socket?
+        self.assertTrue(True)  ## Wie testet man einen Socket?
 
     def test_ready_send_socket(self):
         # ready_send_socket() ist auf Variabeln angewiesen, die im networkmanager vorher gesetzt werden
         # mocking?
-        #sock = networkmanager.ready_send_socket()
+        # sock = networkmanager.ready_send_socket()
         self.assertTrue(True)
 
     def test_listen_handle_messages(self):
@@ -53,7 +55,8 @@ class TestNetwork(unittest.TestCase):
         self.assertTrue(True)
 
     def test_check_which_emote(self):
-        emotestrings = [":smile:", ":crylaugh:", ":cool:", ":think:", ":smirk:", ":sad:", ":yawn:", ":cry:", ":fear:", ":clown:"]
+        emotestrings = [":smile:", ":crylaugh:", ":cool:", ":think:", ":smirk:", ":sad:", ":yawn:", ":cry:", ":fear:",
+                        ":clown:"]
         emotesymbols = ["😊", "😂", "😎", "🤔", "😏", "🙁", "🥱", "😭", "😱", "🤡"]
         # Mit Julian abchecken
         self.assertTrue(True)

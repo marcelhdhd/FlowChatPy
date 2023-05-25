@@ -9,7 +9,7 @@ import sys
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtWidgets import QApplication
 
-from Settings import settings
+from settings import settings
 
 
 class ChangeNameWindow:

@@ -14,10 +14,9 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPalette, QColor, QTextCursor
 from PyQt6.QtWidgets import QWidget, QApplication, QMessageBox, QMainWindow
 
-import Settings.settings
 import net.networkmanager
-from GUI import changeNameWindow
-from Settings import settings
+from gui import changeNameWindow
+from settings import settings
 
 
 class Ui_MainWindow(QWidget):

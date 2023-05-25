@@ -2,7 +2,7 @@ import unittest
 from datetime import datetime
 import json
 
-import messagepayload
+from net import messagepayload
 
 
 class TestMessagePayload(unittest.TestCase):
