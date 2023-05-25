@@ -83,18 +83,14 @@ def send_message(message):
 
 
 def send(message: 'This is a UDP message') -> None:
-    print("message: " + message)
-    print("1")
+    print("SENT message: " + message)
     sock = socket.socket(socket.AF_INET,  # Internet
                          socket.SOCK_DGRAM,
                          socket.IPPROTO_UDP)  # UDP
-    print("2")
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    print("3")
-    sock.bind((hostname, "24900"))
-    sock.sendto(message, broadcast_address)
-    print("4")
+    print("hostname: " + hostname)
+    sock.sendto(bytes(message, "utf-8"), ("255.255.255.255", 2490))
+    message_queue.append(message)
     sock.close()
 
 
