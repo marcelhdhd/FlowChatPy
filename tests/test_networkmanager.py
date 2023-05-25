@@ -14,23 +14,6 @@ class TestNetwork(unittest.TestCase):
         ip = networkmanager.ip_finder()
         self.assertTrue(ipaddress.ip_address(ip))
 
-    def test_ready_listen_socket(self):
-        networkmanager.ready_listen_socket().close()
-        self.assertTrue(True)  ## Wie testet man einen Socket?
-
-    def test_ready_send_socket(self):
-        # ready_send_socket() ist auf Variabeln angewiesen, die im networkmanager vorher gesetzt werden
-        # mocking?
-        # sock = networkmanager.ready_send_socket()
-        self.assertTrue(True)
-
-    def test_listen_handle_messages(self):
-        # starte loop
-        # sende ein udp packet an diese loop
-        # assertEquals content von empfangenem packet
-        # schließe loop
-        self.assertTrue(True)
-
     def test_send_message(self):
         message = "python unittest"
         # längere Nachrichten
