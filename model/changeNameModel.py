@@ -1,0 +1,5 @@
+import changeNameWindow
+
+
+class ChangeNameModel:
+

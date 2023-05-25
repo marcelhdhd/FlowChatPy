@@ -2,9 +2,6 @@
 <module type="PYTHON_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/Core" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/GUI" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Network" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.10 (FlowChatPy)" jdkType="Python SDK" />
