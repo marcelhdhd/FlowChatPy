@@ -8,6 +8,7 @@ import json
 import os
 import threading
 import time
+from multiprocessing import Process
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import Qt
@@ -16,10 +17,14 @@ from PyQt6.QtWidgets import QWidget, QApplication, QMessageBox, QMainWindow
 
 import net.networkmanager
 from gui import changeNameWindow
+from net.networkmanager import Networkmanager
 from settings import settings
 
 
 class Ui_MainWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        netm = Networkmanager()
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -115,7 +120,7 @@ class Ui_MainWindow(QWidget):
         if reply == qmsgbox.standardButtons().Yes:
             event.accept()
             # closes sockets
-            net.networkmanager.on_closing()
+            #net.networkmanager.on_closing()
             # stops all threads and shuts down the application on close
             os._exit(0)
         else:
@@ -208,7 +213,6 @@ sys.exit(app.exec())
 #if __name__ == "__main__":
 #    import sys
 #    app = QApplication(sys.argv)
-#
 #    MainWindow = QMainWindow()
 #    ui = Ui_MainWindow()
 #    ui.setupUi(MainWindow)
