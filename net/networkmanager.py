@@ -134,6 +134,7 @@ def on_closing():
 # daemonize the listener so that one does not block the main thread
 def main():
     listener_daemon = threading.Thread(target=listen_handle_messages, daemon=True)
+    print("Starting network listener daemon")
     listener_daemon.start()
 
 
