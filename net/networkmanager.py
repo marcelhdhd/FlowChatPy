@@ -1,3 +1,4 @@
+import asyncio
 import socket
 import threading
 import re
@@ -9,9 +10,8 @@ from net import messagepayload as payloads
 
 # basic networking code that allows messages to be passed over broadcast to other users as bitstream
 broadcast_ip = '255.255.255.255'
-port_send = 24990
-port_recv = 25000
-broadcast_address = (broadcast_ip, port_recv)
+port = 25000
+broadcast_address = (broadcast_ip, port)
 msg_encoding = "utf-8"
 message_queue = []
 
@@ -30,43 +30,25 @@ def ip_finder():
     return ip
 
 
-# method for readying incoming socket
-def ready_listen_socket():
-    # UDP socket for broadcast recv (ipv4, udp)
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    # Allow broadcast on socket
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-    # Bind socket to any ip and recv port
-    sock.bind(("0.0.0.0", port_recv))
-    return sock
-
-
-# method for readying outgoing socket
-def ready_send_socket():
-    # UDP socket for broadcast send (ipv4, udp)
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-    # Allow broadcast on socket
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-    # Bind socket to any ip and recv port
-    sock.bind((hostname, port_send))
-    return sock
+hostname = ip_finder()
 
 
 # method for listening and handling of incoming messages
-def listen_handle_messages():
-    while True:
-        # Thread will wait here until a packet on recv_socket is received
-        # will write message and ip and port to variable
-        msg_and_address = listen_sock.recvfrom(4096)
-        # message will be utf-8 decoded
-        json = msg_and_address[0].decode(msg_encoding)
-        # also save ip addr to display in gui
-        # todo change displayed addr to chosen username to allow recognition of users
-        # addr = msg_and_address[1][0]
-        # also save port for ?
-        # ip = msg_and_address[1][1]
-        print("recieved message " + json)
-        message_queue.append(json)
+#def listen_handle_messages():
+#    while True:
+#        # Thread will wait here until a packet on recv_socket is received
+#        # will write message and ip and port to variable
+#        # listen_sock.setblocking(False)
+#        msg_and_address = listen_sock.recvfrom(4096)
+#        # message will be utf-8 decoded
+#        json = msg_and_address[0].decode(msg_encoding)
+#        # also save ip addr to display in gui
+#        # todo change displayed addr to chosen username to allow recognition of users
+#        # addr = msg_and_address[1][0]
+#        # also save port for ?
+#        # ip = msg_and_address[1][1]
+#        print("recieved message " + json)
+#        message_queue.append(json)
 
 
 # method for sending a user specific message
@@ -80,7 +62,15 @@ def send_message(message):
     payloadmessage.message = check_emote(message)
     payloadmessage.date = datetime.now().strftime("[%H:%M:%S] ")
     # also utf-8 encode that message
-    send_sock.sendto(payloadmessage.toJson().encode(msg_encoding), broadcast_address)
+    print("Message send")
+    send(payloadmessage.toJson())
+
+
+def send(message: 'This is a UDP message') -> None:
+    sock = socket.socket(socket.AF_INET,  # Internet
+                         socket.SOCK_DGRAM)  # UDP
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    sock.sendto(message.encode(msg_encoding), (hostname, port))
 
 
 def check_emote(message):
@@ -121,24 +111,35 @@ def send_custom_message(message):
     payloadMessage = payloads.CustomMessage()
     payloadMessage.message = message
     # also utf-8 encode that message
-    send_sock.sendto(payloadMessage.toJson().encode(msg_encoding), broadcast_address)
+    send(payloadMessage.toJson())
 
 
 # method for closing sockets and listeners
 def on_closing():
     send_message("Bye")
-    send_sock.close()
-    listen_sock.close()
+    #send_sock.close()
+    #listen_sock.close()
 
 
-# daemonize the listener so that one does not block the main thread
-def main():
-    listener_daemon = threading.Thread(target=listen_handle_messages, daemon=True)
-    print("Starting network listener daemon")
-    listener_daemon.start()
+class ListenProtocol(asyncio.DatagramProtocol):
+    def __init__(self):
+        super().__init__()
+
+    def connection_made(self, transport) -> "Used by asyncio":
+        self.transport = transport
+
+    def datagram_received(self, data, addr) -> "Main entrypoint for processing message":
+        print(f"Recieved Message from: {addr}")
+        print(f"With message: {data}")
+        message_queue.append(data)
 
 
-hostname = ip_finder()
-send_sock = ready_send_socket()
-listen_sock = ready_listen_socket()
-main()
+# use asyncio such that one does not block the main thread
+async def main():
+    loop = asyncio.get_event_loop()
+    t = loop.create_datagram_endpoint(ListenProtocol, local_addr=(hostname, port))
+    loop.run_until_complete(t)
+    loop.run_forever()
+    # listener_daemon = threading.Thread(target=listen_handle_messages, daemon=True)
+    # print("Starting network listener daemon")
+    # listener_daemon.start()
