@@ -114,13 +114,13 @@ class Ui_MainWindow(QWidget):
     # defines what happens when you close the window
     def closeEvent(self, event):
         qmsgbox = QMessageBox()
-        reply = qmsgbox.question(MainWindow,  "Window Close", "Do you want to quit?",
+        reply = qmsgbox.question(MainWindow, "Window Close", "Do you want to quit?",
                                  qmsgbox.standardButtons().Yes, qmsgbox.standardButtons().No)
         # confirmation box
         if reply == qmsgbox.standardButtons().Yes:
             event.accept()
             # closes sockets
-            #net.networkmanager.on_closing()
+            # net.networkmanager.on_closing()
             # stops all threads and shuts down the application on close
             os._exit(0)
         else:
@@ -201,8 +201,8 @@ class Ui_MainWindow(QWidget):
                         print("@TODO Command")
 
 
-
 import sys
+
 app = QApplication(sys.argv)
 MainWindow = QMainWindow()
 ui = Ui_MainWindow()
@@ -210,7 +210,7 @@ ui.setupUi(MainWindow)
 MainWindow.show()
 sys.exit(app.exec())
 
-#if __name__ == "__main__":
+# if __name__ == "__main__":
 #    import sys
 #    app = QApplication(sys.argv)
 #    MainWindow = QMainWindow()
