@@ -3,7 +3,9 @@ import json
 import stat
 
 directoryUser = os.path.expanduser("~")
-directorySettings = 'C:\\Program Files (x86)\\FlowChat'
+# Using "os.path.join" to make flowChat os independent (works on windows, linux, mac, ..)
+# Also move settings folder to user home instead of "Program files", which required admin rights to write to
+directoryFlowChat = os.path.join(directoryUser, ".flowChatPy")
 
 
 class Settings:
@@ -21,11 +23,11 @@ class Settings:
         return value in jsons
 
     def load(self):
-        if os.path.exists(directorySettings):
+        if os.path.exists(os.path.join(directoryFlowChat, "settings.json")):
             # load if the file exists
-            print("Loading File...")
-            with open(directorySettings + "\\settings.json", "r") as readFile:
-                print("Reading File...")
+            print("Found settings.json file")
+            with open(os.path.join(directoryFlowChat, "settings.json"), "r") as readFile:
+                print("Reading settings.json file")
                 jsonString = json.loads(readFile.read())
                 if self.existJsonValue(jsonString, "focus_window"):
                     self.focus_window = bool(jsonString["focus_window"])
@@ -44,14 +46,16 @@ class Settings:
 
     def save(self):
         try:
-            print("Start Saving File...")
-            if os.path.exists(directorySettings):
-                with open(directorySettings, "w") as writeFile:
+            print("Start saving settings.json file")
+            if os.path.exists(directoryFlowChat):
+                with open(os.path.join(directoryFlowChat, "settings.json"), "w") as writeFile:
                     writeFile.write(self.toJson())
-                    print("Saving Finished!")
+                    print("Saving finished!")
             else:
-                os.mkdir(directorySettings, stat.S_IWRITE)
-                with open(directorySettings + "\\settings.json", "w") as writeFile:
+                print("Did not found .flowChatPy directory, attempting to mkdir")
+                os.mkdir(directoryFlowChat, stat.S_IWRITE)
+                with open(os.path.join(directoryFlowChat, "settings.json"), "w") as writeFile:
+                    print("Mkdir successful")
                     writeFile.write(self.toJson())
                     print("Saving Finished!")
         except:

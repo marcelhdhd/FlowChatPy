@@ -19,7 +19,5 @@ elif (len(sys.argv) == 2 and (sys.argv[1] == "--cli" or sys.argv[1] == "-c")):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-
-    #net = threading.Thread(target=net.networkmanager, daemon=True)
     net.networkmanager
-    gui.main_chatWIndow.Ui_MainWindow
+    gui.main_chatWIndow
