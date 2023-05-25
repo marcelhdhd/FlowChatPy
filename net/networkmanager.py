@@ -4,8 +4,10 @@ import socket
 import threading
 import re
 import time
+from asyncio import transports
 
 from datetime import datetime
+from typing import Any
 
 from net.listenserver import ListenProtocol
 from settings import settings
@@ -16,6 +18,7 @@ message_queue = []
 port = 25000
 broadcast_address = ('255.255.255.255', port)
 msg_encoding = "utf-8"
+mask = '255.255.255.0'
 
 
 # method for finding local ip
@@ -115,17 +118,20 @@ class Networkmanager():
         def __init__(self):
             super().__init__()
 
-        def connection_made(self, transport) -> "Used by asyncio":
+        def connection_made(self, transport: transports.DatagramTransport) -> None:
+            print("connection made")
             self.transport = transport
 
-        def datagram_received(self, data, addr) -> "Main entrypoint for processing message":
+        def datagram_received(self, data: bytes, addr: tuple[str | Any, int]) -> None:
             print(f"Recieved Message from: {addr}")
             print(f"With message: {data}")
             message_queue.append(data)
 
     def start(self):
         loop = asyncio.new_event_loop()
-        t = loop.create_datagram_endpoint(ListenProtocol, local_addr=(hostname, port))
+        asyncio.set_event_loop(loop)
+        protocol = self.ListenProtocol()
+        t = loop.create_datagram_endpoint(lambda: protocol, local_addr=(hostname, port))
         loop.run_until_complete(t)
         loop.run_forever()
 
