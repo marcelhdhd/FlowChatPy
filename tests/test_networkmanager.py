@@ -35,18 +35,19 @@ class TestNetwork(unittest.TestCase):
         # Start networkmanager's listen_loop method in new thread
         listener_daemon = threading.Thread(target=networkmanager.listen_loop, daemon=True)
         listener_daemon.start()
+        networkmanager.message_queue.clear()
         # Send all messages
         for message in messagesNoEmoji:
             networkmanager.send_message(message)
-        time.sleep(0.1)
+        # Stop networkmanager.listen_loop
+        networkmanager.on_closing()
         i = 0
         for recv_message in networkmanager.message_queue:
             payload = json.loads(recv_message)
             self.assertEqual(payload["message"], messagesNoEmoji[i], "retrieved messages missmatch!")
             self.assertEqual(payload["type"], "userMessage", "should be userMessage")
             i += 1
-        # Stop listen_loop
-        networkmanager.running = False
+        networkmanager.message_queue.clear()
         # todo längere Nachrichten
 
     def test_check_emote(self):
@@ -66,17 +67,18 @@ class TestNetwork(unittest.TestCase):
         # Start networkmanager's listen_loop method in new thread
         listener_daemon = threading.Thread(target=networkmanager.listen_loop, daemon=True)
         listener_daemon.start()
+        networkmanager.message_queue.clear()
         for message in messagesNoEmoji:
             networkmanager.send_custom_message(message)
-        time.sleep(0.1)
+        # Stop listen_loop
+        networkmanager.on_closing()
         i = 0
         for recv_message in networkmanager.message_queue:
             payload = json.loads(recv_message)
             self.assertEqual(payload["message"], messagesNoEmoji[i], "retrieved messages missmatch!")
             self.assertEqual(payload["type"], "customMessage", "should be customMessage")
             i += 1
-        # Stop listen_loop
-        networkmanager.running = False
+        networkmanager.message_queue.clear()
 
     def test_on_closing(self):
         networkmanager.running = True

@@ -37,3 +37,33 @@ class Command:
 
     def toJson(self):
         return json.dumps(self.__dict__)
+
+
+class Incoming:
+
+    def __init__(self, objectIn):
+        self.objectIn = objectIn
+
+    def getPayloadType(self):
+        paylaod = json.loads(self.objectIn)
+        payload_type = paylaod['type']
+        if payload_type == 'userMessage':
+            ret = UserMessage()
+            ret.message = paylaod["message"]
+            ret.date = paylaod["date"]
+            ret.ip = paylaod["ip"]
+            ret.name = paylaod["name"]
+            return ret
+        elif payload_type == "customMessage":
+            ret = CustomMessage()
+            ret.message = paylaod["message"]
+            return ret
+        elif payload_type == "command":
+            ret = Command()
+            ret.command = paylaod["command"]
+            ret.date = paylaod["date"]
+            ret.ip = paylaod["ip"]
+            return ret
+        else:
+            print(paylaod)
+            raise TypeError("incoming no valid flowChat json")

@@ -7,17 +7,18 @@ from asyncio import transports
 from datetime import datetime
 from typing import Any
 
+import net.messagepayload
 from settings import settings
 from net import messagepayload as payloads
 
 # basic networking code that allows messages to be passed over broadcast to other users as bitstream
 message_queue = []
 listen_port = 25000
-send_port = 24900
 broadcast_address = ('255.255.255.255', listen_port)
 msg_encoding = "utf-8"
 mask = '255.255.255.0'
 running = False
+
 
 # method for finding local ip
 def ip_finder():
@@ -84,7 +85,7 @@ def send_message(message):
 
 
 def send(message: 'This is a UDP message') -> None:
-    print("SENT message: " + message)
+    # print("SENT message: " + message)
     sock = socket.socket(socket.AF_INET,  # Internet
                          socket.SOCK_DGRAM,
                          socket.IPPROTO_UDP)  # UDP
@@ -104,12 +105,15 @@ def send_custom_message(message):
 
 # method for closing sockets and listeners
 def on_closing():
-    running = False
+    net.networkmanager.running = False
+    stop = net.messagepayload.Command()
+    send(stop.toJson())
     send_message("Bye")
+
 
 # workaround method for receiving messages
 def listen_loop():
-    running = True
+    net.networkmanager.running = True
     # UDP socket for broadcast recv (ipv4, udp)
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     # Allow broadcast on socket
@@ -122,13 +126,17 @@ def listen_loop():
         msg_and_address = sock.recvfrom(4096)
         # message will be utf-8 decoded
         json = msg_and_address[0].decode(msg_encoding)
-        # also save ip addr to display in gui
         # todo change displayed addr to chosen username to allow recognition of users
-        # addr = msg_and_address[1][0]
-        # also save port for ?
-        # ip = msg_and_address[1][1]
-        print("recieved message " + json)
-        message_queue.append(json)
+        if isinstance(net.messagepayload.Incoming(json).getPayloadType(),
+                      (net.messagepayload.UserMessage, net.messagepayload.CustomMessage)):
+            # print("RECIEVED message " + json)
+            message_queue.append(json)
+        elif isinstance(net.messagepayload.Incoming(json).getPayloadType(), net.messagepayload.Command):
+            # print("Command recieved: " + json)
+            pass
+        else:
+            # print("Packet recieved: " + json)
+            pass
     sock.close()
 
 

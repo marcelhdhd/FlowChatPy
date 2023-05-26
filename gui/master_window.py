@@ -122,7 +122,7 @@ class Ui_MainWindow(QWidget):
         if reply == qmsgbox.standardButtons().Yes:
             event.accept()
             # closes sockets
-            # net.networkmanager.on_closing()
+            net.networkmanager.on_closing()
             # stops all threads and shuts down the application on close
             os._exit(0)
         else:
