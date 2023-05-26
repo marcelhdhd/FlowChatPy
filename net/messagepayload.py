@@ -44,7 +44,7 @@ class Incoming:
     def __init__(self, objectIn):
         self.objectIn = objectIn
 
-    def getPayloadType(self):
+    def json_to_messagepayload(self):
         paylaod = json.loads(self.objectIn)
         payload_type = paylaod['type']
         if payload_type == 'userMessage':

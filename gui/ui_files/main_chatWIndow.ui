@@ -58,36 +58,31 @@
      <x>0</x>
      <y>0</y>
      <width>1026</width>
-     <height>26</height>
+     <height>22</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuDatei">
-    <property name="title">
-     <string>Datei</string>
-    </property>
-   </widget>
    <widget class="QMenu" name="menuEinstellung">
     <property name="title">
-     <string>Einstellung</string>
+     <string>Einstellungen</string>
     </property>
     <addaction name="changeName"/>
+    <addaction name="actionFenster_Fokusieren"/>
+    <addaction name="actionDunkle_Ansicht"/>
    </widget>
    <widget class="QMenu" name="menuBeenden">
     <property name="title">
      <string>Beenden</string>
     </property>
    </widget>
-   <widget class="QMenu" name="menuAnsicht">
+   <widget class="QMenu" name="menuHilfe">
     <property name="title">
-     <string>Ansicht</string>
+     <string>Hilfe</string>
     </property>
-    <addaction name="focusWindow"/>
-    <addaction name="darkMode"/>
+    <addaction name="action_ber_FlowChatPy"/>
    </widget>
-   <addaction name="menuDatei"/>
-   <addaction name="menuAnsicht"/>
    <addaction name="menuEinstellung"/>
    <addaction name="menuBeenden"/>
+   <addaction name="menuHilfe"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="changeName">
@@ -109,6 +104,21 @@
    </property>
    <property name="text">
     <string>Dunkel Ansicht</string>
+   </property>
+  </action>
+  <action name="action_ber_FlowChatPy">
+   <property name="text">
+    <string>Über FlowChatPy</string>
+   </property>
+  </action>
+  <action name="actionFenster_Fokusieren">
+   <property name="text">
+    <string>Fenster Fokusieren</string>
+   </property>
+  </action>
+  <action name="actionDunkle_Ansicht">
+   <property name="text">
+    <string>Dunkle Ansicht</string>
    </property>
   </action>
  </widget>

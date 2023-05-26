@@ -2,8 +2,15 @@ import unittest
 from datetime import datetime
 import json
 
+import net.messagepayload
 from net import messagepayload
 
+messages = ["python unittest", "o92837rzfcmqo9rzxcLMCL qhwidf7fd§NEC / ", "CCWVz54g(fXMhdgU-=3#/Xe(Vr[%}?",
+                   "cSE?U:@%DXzht:G9VH!K8x8wGVi*S+", "#{/[PD&BT*Epr]4J7VwjB@$Q.U?.dX", "!q4{MzKuWta,C2wPT{j8:imA}b6B.$",
+                   "LH&}t_,W@Pg{P*bQq,;U&GEP7UU*];", "]GJ,,2xaA%4y8d?+8amVrQ=FV,=X*}"]
+dates = ["[14:34:30]", "[04:54:10]", "[18:25:00]"]
+ips = ["192.168.1.1", "10.10.10.10", "0.0.0.0"]
+names = ["marcelhdhd", "julian", "jonas", "max", "pascal"]
 
 class TestMessagePayload(unittest.TestCase):
 
@@ -60,6 +67,44 @@ class TestMessagePayload(unittest.TestCase):
         self.assertEqual(test_json_date, system_date, "Should be " + system_date)
         self.assertEqual(test_json_ip, "192.168.42.42", "Should be 192.168.42.42")
 
+    def test_json_to_messagepayload_usermessage(self):
+        jsons = []
+        for message in messages:
+            for date in dates:
+                for ip in ips:
+                    for name in names:
+                        jsons.append("{\"type\": \"userMessage\", \"message\": \"" + message + "\", \"date\": \""
+                                     + date + " \", \"ip\": \"" + ip + "\", \"name\": \"" + name + "\"}")
+        for jsonn in jsons:
+            self.assertTrue(isinstance(net.messagepayload.Incoming(jsonn).json_to_messagepayload(), net.messagepayload.UserMessage))
+            self.assertFalse(isinstance(net.messagepayload.Incoming(jsonn).json_to_messagepayload(),
+                                        (net.messagepayload.CustomMessage, net.messagepayload.Command)))
+
+    def test_json_to_messagepayload_custommessage(self):
+        jsons = []
+        for message in messages:
+            jsons.append("{\"type\": \"customMessage\", \"message\": \"" + message + "\"}")
+        for jsonn in jsons:
+            self.assertTrue(isinstance(net.messagepayload.Incoming(jsonn).json_to_messagepayload(), net.messagepayload.CustomMessage))
+            self.assertFalse(isinstance(net.messagepayload.Incoming(jsonn).json_to_messagepayload(),
+                                        (net.messagepayload.UserMessage, net.messagepayload.Command)))
+
+    def test_json_to_messagepayload_command(self):
+        jsons = []
+        for command in messages:
+            for date in dates:
+                for ip in ips:
+                    jsons.append("{\"type\": \"command\", \"command\": \"" + command + "\", \"date\": \""
+                                 + date + " \", \"ip\": \"" + ip + "\"}")
+        for jsonn in jsons:
+            self.assertTrue(isinstance(net.messagepayload.Incoming(jsonn).json_to_messagepayload(), net.messagepayload.Command))
+            self.assertFalse(isinstance(net.messagepayload.Incoming(jsonn).json_to_messagepayload(),
+                                        (net.messagepayload.UserMessage, net.messagepayload.CustomMessage)))
+
+    def test_json_to_messagepayload_typeerror(self):
+        jsonn = "{\"type\": \"illegal\"}"
+        illegal = net.messagepayload.Incoming(jsonn)
+        self.assertRaises(TypeError, illegal.json_to_messagepayload)
 
 if __name__ == '__main__':
     unittest.main()

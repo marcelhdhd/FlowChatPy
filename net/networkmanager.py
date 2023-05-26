@@ -85,7 +85,7 @@ def send_message(message):
 
 
 def send(message: 'This is a UDP message') -> None:
-    # print("SENT message: " + message)
+    print("SENT message: " + message)
     sock = socket.socket(socket.AF_INET,  # Internet
                          socket.SOCK_DGRAM,
                          socket.IPPROTO_UDP)  # UDP
@@ -127,15 +127,15 @@ def listen_loop():
         # message will be utf-8 decoded
         json = msg_and_address[0].decode(msg_encoding)
         # todo change displayed addr to chosen username to allow recognition of users
-        if isinstance(net.messagepayload.Incoming(json).getPayloadType(),
+        if isinstance(net.messagepayload.Incoming(json).json_to_messagepayload(),
                       (net.messagepayload.UserMessage, net.messagepayload.CustomMessage)):
-            # print("RECIEVED message " + json)
+            print("RECIEVED message " + json)
             message_queue.append(json)
-        elif isinstance(net.messagepayload.Incoming(json).getPayloadType(), net.messagepayload.Command):
-            # print("Command recieved: " + json)
+        elif isinstance(net.messagepayload.Incoming(json).json_to_messagepayload(), net.messagepayload.Command):
+            print("Command recieved: " + json)
             pass
         else:
-            # print("Packet recieved: " + json)
+            print("Packet recieved: " + json)
             pass
     sock.close()
 

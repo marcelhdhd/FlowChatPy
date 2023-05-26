@@ -67,16 +67,14 @@ class Ui_MainWindow(QWidget):
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(parent=MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1026, 26))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1026, 22))
         self.menubar.setObjectName("menubar")
-        self.menuDatei = QtWidgets.QMenu(parent=self.menubar)
-        self.menuDatei.setObjectName("menuDatei")
-        self.menuEinstellung = QtWidgets.QMenu(parent=self.menubar)
-        self.menuEinstellung.setObjectName("menuEinstellung")
+        self.menuEinstellungen = QtWidgets.QMenu(parent=self.menubar)
+        self.menuEinstellungen.setObjectName("menuEinstellungen")
         self.menuBeenden = QtWidgets.QMenu(parent=self.menubar)
         self.menuBeenden.setObjectName("menuBeenden")
-        self.menuAnsicht = QtWidgets.QMenu(parent=self.menubar)
-        self.menuAnsicht.setObjectName("menuAnsicht")
+        self.menuHilfe = QtWidgets.QMenu(parent=self.menubar)
+        self.menuHilfe.setObjectName("menuHilfe")
         MainWindow.setMenuBar(self.menubar)
 
         self.statusbar = QtWidgets.QStatusBar(parent=MainWindow)
@@ -87,23 +85,29 @@ class Ui_MainWindow(QWidget):
         self.changeName.setObjectName("changeName")
         self.changeName.triggered.connect(self.openNameChangeWindow)
 
-        self.focusWindow = QtGui.QAction(parent=MainWindow)
-        self.focusWindow.setCheckable(True)
-        self.focusWindow.setObjectName("focusWindow")
+        self.action_ber_FlowChatPy = QtGui.QAction(parent=MainWindow)
+        self.action_ber_FlowChatPy.setObjectName("action_ber_FlowChatPy")
+        self.actionFenster_Fokusieren = QtGui.QAction(parent=MainWindow)
+        self.actionFenster_Fokusieren.setCheckable(True)
+        self.actionFenster_Fokusieren.setObjectName("actionFenster_Fokusieren")
+        self.actionDunkle_Ansicht = QtGui.QAction(parent=MainWindow)
+        self.actionDunkle_Ansicht.setCheckable(True)
+        self.actionDunkle_Ansicht.setObjectName("darkMode")
 
-        self.darkMode = QtGui.QAction(parent=MainWindow)
-        self.darkMode.setCheckable(True)
-        self.darkMode.setObjectName("darkMode")
-        self.darkMode.triggered.connect(self.change_theme)
+        self.menuEinstellungen.addAction(self.changeName)
+        self.menuEinstellungen.addAction(self.actionFenster_Fokusieren)
+        self.menuEinstellungen.addAction(self.actionDunkle_Ansicht)
+        self.menuHilfe.addAction(self.action_ber_FlowChatPy)
+        self.actionDunkle_Ansicht.triggered.connect(self.change_theme)
 
-        self.menuEinstellung.addAction(self.changeName)
-        self.menuAnsicht.addAction(self.focusWindow)
-        self.menuAnsicht.addAction(self.darkMode)
+        self.menuEinstellungen.addAction(self.changeName)
+        self.menuEinstellungen.addAction(self.actionFenster_Fokusieren)
+        self.menuEinstellungen.addAction(self.actionDunkle_Ansicht)
 
-        self.menubar.addAction(self.menuDatei.menuAction())
-        self.menubar.addAction(self.menuAnsicht.menuAction())
-        self.menubar.addAction(self.menuEinstellung.menuAction())
+        self.menubar.addAction(self.menuEinstellungen.menuAction())
         self.menubar.addAction(self.menuBeenden.menuAction())
+        self.menubar.addAction(self.menuHilfe.menuAction())
+        #self.menuBeenden.triggered.connect(self.closeEvent(MainWindow.closeEvent))
 
         self.retranslateUi(MainWindow)
 
@@ -116,7 +120,7 @@ class Ui_MainWindow(QWidget):
     # defines what happens when you close the window
     def closeEvent(self, event):
         qmsgbox = QMessageBox()
-        reply = qmsgbox.question(MainWindow, "Window Close", "Do you want to quit?",
+        reply = qmsgbox.question(MainWindow, "Beenden", "Willst du FlowChatPy wirklich beenden?",
                                  qmsgbox.standardButtons().Yes, qmsgbox.standardButtons().No)
         # confirmation box
         if reply == qmsgbox.standardButtons().Yes:
@@ -135,20 +139,20 @@ class Ui_MainWindow(QWidget):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "FlowChatPy"))
         self.chatButton.setText(_translate("MainWindow", "Senden"))
-        self.menuDatei.setTitle(_translate("MainWindow", "Datei"))
-        self.menuEinstellung.setTitle(_translate("MainWindow", "Einstellung"))
+        self.menuEinstellungen.setTitle(_translate("MainWindow", "Einstellungen"))
         self.menuBeenden.setTitle(_translate("MainWindow", "Beenden"))
-        self.menuAnsicht.setTitle(_translate("MainWindow", "Ansicht"))
+        self.menuHilfe.setTitle(_translate("MainWindow", "Hilfe"))
         self.changeName.setText(_translate("MainWindow", "Namen ändern"))
-        self.focusWindow.setText(_translate("MainWindow", "Fenster Fokusieren"))
-        self.darkMode.setText(_translate("MainWindow", "Darkmode"))
+        self.actionFenster_Fokusieren.setText(_translate("MainWindow", "Fenster fokussieren"))
+        self.actionDunkle_Ansicht.setText(_translate("MainWindow", "Darkmode"))
+        self.action_ber_FlowChatPy.setText(_translate("MainWindow", "Über FlowChatPy"))
 
     def send(self, *args):
         net.networkmanager.send_message(self.userChat.text())
         self.userChat.setText("")
 
     def change_theme(self, changedSettings):
-        if self.darkMode.isChecked():
+        if self.actionDunkle_Ansicht.isChecked():
             settings.settingsInstance.dark_mode = True
         else:
             settings.settingsInstance.dark_mode = False
