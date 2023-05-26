@@ -17,7 +17,7 @@ send_port = 24900
 broadcast_address = ('255.255.255.255', listen_port)
 msg_encoding = "utf-8"
 mask = '255.255.255.0'
-
+running = False
 
 # method for finding local ip
 def ip_finder():
@@ -90,7 +90,7 @@ def send(message: 'This is a UDP message') -> None:
                          socket.IPPROTO_UDP)  # UDP
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     sock.sendto(bytes(message, "utf-8"), ("255.255.255.255", 25000))
-    #message_queue.append(message)
+    # message_queue.append(message)
     sock.close()
 
 
@@ -104,17 +104,19 @@ def send_custom_message(message):
 
 # method for closing sockets and listeners
 def on_closing():
+    running = False
     send_message("Bye")
 
 # workaround method for receiving messages
 def listen_loop():
+    running = True
     # UDP socket for broadcast recv (ipv4, udp)
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     # Allow broadcast on socket
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     # Bind socket to any ip and recv port
     sock.bind(("0.0.0.0", listen_port))
-    while True:
+    while running:
         # Thread will wait here until a packet on recv_socket is received
         # will write message and ip and port to variable
         msg_and_address = sock.recvfrom(4096)
@@ -127,10 +129,13 @@ def listen_loop():
         # ip = msg_and_address[1][1]
         print("recieved message " + json)
         message_queue.append(json)
+    sock.close()
+
 
 def run_daemon():
     listener_daemon = threading.Thread(target=listen_loop, daemon=True)
     listener_daemon.start()
+
 
 # todo: implement asyncio socket endpoint management
 class Networkmanager():
@@ -153,7 +158,7 @@ class Networkmanager():
 
     def start(self):
         loop = asyncio.get_event_loop()
-        #asyncio.set_event_loop(loop)
+        # asyncio.set_event_loop(loop)
         protocol = self.ListenProtocol()
         t = loop.create_datagram_endpoint(lambda: protocol, local_addr=(hostname, listen_port))
         loop.run_until_complete(t)
