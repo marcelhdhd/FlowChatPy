@@ -12,8 +12,9 @@ from net import messagepayload as payloads
 
 # basic networking code that allows messages to be passed over broadcast to other users as bitstream
 message_queue = []
-port = 25000
-broadcast_address = ('255.255.255.255', port)
+listen_port = 25000
+send_port = 24900
+broadcast_address = ('255.255.255.255', listen_port)
 msg_encoding = "utf-8"
 mask = '255.255.255.0'
 
@@ -89,7 +90,7 @@ def send(message: 'This is a UDP message') -> None:
                          socket.IPPROTO_UDP)  # UDP
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     sock.sendto(bytes(message, "utf-8"), ("255.255.255.255", 25000))
-    message_queue.append(message)
+    #message_queue.append(message)
     sock.close()
 
 
@@ -105,7 +106,33 @@ def send_custom_message(message):
 def on_closing():
     send_message("Bye")
 
+# workaround method for receiving messages
+def listen_loop():
+    # UDP socket for broadcast recv (ipv4, udp)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    # Allow broadcast on socket
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    # Bind socket to any ip and recv port
+    sock.bind(("0.0.0.0", listen_port))
+    while True:
+        # Thread will wait here until a packet on recv_socket is received
+        # will write message and ip and port to variable
+        msg_and_address = sock.recvfrom(4096)
+        # message will be utf-8 decoded
+        json = msg_and_address[0].decode(msg_encoding)
+        # also save ip addr to display in gui
+        # todo change displayed addr to chosen username to allow recognition of users
+        # addr = msg_and_address[1][0]
+        # also save port for ?
+        # ip = msg_and_address[1][1]
+        print("recieved message " + json)
+        message_queue.append(json)
 
+def run_daemon():
+    listener_daemon = threading.Thread(target=listen_loop, daemon=True)
+    listener_daemon.start()
+
+# todo: implement asyncio socket endpoint management
 class Networkmanager():
     def __init__(self):
         super().__init__()
@@ -125,10 +152,10 @@ class Networkmanager():
             message_queue.append(data)
 
     def start(self):
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
+        loop = asyncio.get_event_loop()
+        #asyncio.set_event_loop(loop)
         protocol = self.ListenProtocol()
-        t = loop.create_datagram_endpoint(lambda: protocol, local_addr=(hostname, port))
+        t = loop.create_datagram_endpoint(lambda: protocol, local_addr=(hostname, listen_port))
         loop.run_until_complete(t)
         loop.run_forever()
 

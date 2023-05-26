@@ -17,6 +17,7 @@ from PyQt6.QtWidgets import QWidget, QApplication, QMessageBox, QMainWindow
 
 import net.networkmanager
 from gui import changeNameWindow
+from net import networkmanager
 from net.networkmanager import Networkmanager
 from settings import settings
 
@@ -24,7 +25,8 @@ from settings import settings
 class Ui_MainWindow(QWidget):
     def __init__(self):
         super().__init__()
-        netm = Networkmanager()
+        #netm = Networkmanager()
+        networkmanager.run_daemon()
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
