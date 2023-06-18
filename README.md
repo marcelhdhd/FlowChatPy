@@ -3,11 +3,11 @@ A simple LAN-Chat Utility written in Python
 
 ## Requirements
 - Python 3.10 Interpreter
-- customtkinter
+- PyQt6~=6.5.0
 
 ## Installation
 Install the required module with pip:
-> pip3 install customtkinter
+> pip3 install PyQt6~=6.5.0
 
 ## convert the .ui file into a .py file
 
