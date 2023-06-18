@@ -101,6 +101,7 @@ class Ui_MainWindow(QWidget):
         self.actionFenster_Fokusieren = QAction(parent=MainWindow)
         self.actionFenster_Fokusieren.setCheckable(True)
         self.actionFenster_Fokusieren.setObjectName("actionFenster_Fokusieren")
+        self.actionFenster_Fokusieren.triggered.connect(self.change_always_on_top)
         self.menuEinstellungen.addAction(self.actionFenster_Fokusieren)
 
         #Dunkle_Ansicht Object  -   A Button in "Einstellungen"-Object to change the color theme
@@ -163,6 +164,21 @@ class Ui_MainWindow(QWidget):
         settings.settingsInstance.save()
         self.change_theme_color()
 
+    def change_always_on_top(self):
+        if self.actionFenster_Fokusieren.isChecked():
+            settings.settingsInstance.focus_window = True
+        else:
+            settings.settingsInstance.focus_window = False
+        settings.settingsInstance.save()
+        self.change_focus()
+
+    def change_focus(self):
+        if settings.settingsInstance.focus_window:
+            MainWindow.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint, True)
+        else:
+            MainWindow.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint, False)
+        MainWindow.show()
+
     def change_theme_color(self):
         palette = QPalette()
         if settings.settingsInstance.dark_mode:
@@ -219,12 +235,3 @@ ui = Ui_MainWindow()
 ui.setupUi(MainWindow)
 MainWindow.show()
 sys.exit(app.exec())
-
-# if __name__ == "__main__":
-#    import sys
-#    app = QApplication(sys.argv)
-#    MainWindow = QMainWindow()
-#    ui = Ui_MainWindow()
-#    ui.setupUi(MainWindow)
-#    MainWindow.show()
-#    sys.exit(app.exec())
