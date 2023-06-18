@@ -8,106 +8,107 @@ import json
 import os
 import threading
 import time
-from multiprocessing import Process
 
-from PyQt6 import QtCore, QtGui, QtWidgets
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QPalette, QColor, QTextCursor
-from PyQt6.QtWidgets import QWidget, QApplication, QMessageBox, QMainWindow
+from PyQt6.QtCore import Qt, QSize, QRect, QMetaObject, QCoreApplication
+from PyQt6.QtGui import QAction, QPalette, QColor, QTextCursor
+from PyQt6.QtWidgets import QWidget, QApplication, QMessageBox, QMainWindow, QGridLayout, QLineEdit, QListView, \
+    QPushButton, QTextBrowser, QMenuBar, QMenu
 
 import net.networkmanager
-from gui import changeNameWindow
+from gui import changeNameWindow, aboutFlowChatPyWindow
 from net import networkmanager
-from net.networkmanager import Networkmanager
 from settings import settings
 
 
 class Ui_MainWindow(QWidget):
     def __init__(self):
         super().__init__()
-        #netm = Networkmanager()
+        # netm = Networkmanager()
         networkmanager.run_daemon()
 
     def setupUi(self, MainWindow):
+        #MainWindow Object
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1026, 675)
-        MainWindow.setMinimumSize(QtCore.QSize(838, 0))
-        MainWindow.setMaximumSize(QtCore.QSize(4048, 4048))
-
+        MainWindow.setMinimumSize(QSize(838, 0))
+        MainWindow.setMaximumSize(QSize(4048, 4048))
         MainWindow.closeEvent = self.closeEvent
 
-        self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
+        #Centralwidget Object
+        self.centralwidget = QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+        MainWindow.setCentralWidget(self.centralwidget)
 
-        self.gridLayout_3 = QtWidgets.QGridLayout(self.centralwidget)
-        self.gridLayout_3.setObjectName("gridLayout_3")
-
-        self.gridLayout = QtWidgets.QGridLayout()
+        #GridLayout Object
+        self.gridLayout = QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName("gridLayout")
 
-        self.userChat = QtWidgets.QLineEdit(parent=self.centralwidget)
+        #UserChat Object    -   The inputbar
+        self.userChat = QLineEdit(parent=self.centralwidget)
         self.userChat.setObjectName("userChat")
         self.gridLayout.addWidget(self.userChat, 1, 0, 1, 2)
         self.userChat.returnPressed.connect(self.send)
 
-        self.chatButton = QtWidgets.QPushButton(parent=self.centralwidget)
+        #Chatbutton Object  -   The Send-Button
+        self.chatButton = QPushButton(parent=self.centralwidget)
         self.chatButton.setAutoDefault(True)
         self.chatButton.setObjectName("chatButton")
         self.gridLayout.addWidget(self.chatButton, 1, 2, 1, 1)
         self.chatButton.clicked.connect(self.send)
 
-        self.userList = QtWidgets.QListView(parent=self.centralwidget)
+        #Userlist Object    -   The List of all users
+        self.userList = QListView(parent=self.centralwidget)
         self.userList.setObjectName("userList")
         self.gridLayout.addWidget(self.userList, 0, 1, 1, 2)
 
-        self.chatBox = QtWidgets.QTextBrowser(parent=self.centralwidget)
+        #Chatbox Object     -   The Chatwindow
+        self.chatBox = QTextBrowser(parent=self.centralwidget)
         self.chatBox.setObjectName("chatBox")
         self.gridLayout.addWidget(self.chatBox, 0, 0, 1, 1)
-        self.gridLayout_3.addLayout(self.gridLayout, 0, 0, 1, 1)
 
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(parent=MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1026, 22))
+        #Menubar Object     -   A Menubar with Objects "Einstellungen", "Beenden" and "Help"
+        self.menubar = QMenuBar(parent=MainWindow)
+        self.menubar.setGeometry(QRect(0, 0, 1026, 22))
         self.menubar.setObjectName("menubar")
-        self.menuEinstellungen = QtWidgets.QMenu(parent=self.menubar)
-        self.menuEinstellungen.setObjectName("menuEinstellungen")
-        self.menuBeenden = QtWidgets.QMenu(parent=self.menubar)
-        self.menuBeenden.setObjectName("menuBeenden")
-        self.menuHilfe = QtWidgets.QMenu(parent=self.menubar)
-        self.menuHilfe.setObjectName("menuHilfe")
         MainWindow.setMenuBar(self.menubar)
+        #Einstellungen
+        self.menuEinstellungen = QMenu(parent=self.menubar)
+        self.menuEinstellungen.setObjectName("menuEinstellungen")
+        self.menubar.addAction(self.menuEinstellungen.menuAction())
+        #Beenden
+        self.menuBeenden = QAction(parent=self.menubar)
+        self.menuBeenden.setObjectName("menuBeenden")
+        self.menuBeenden.triggered.connect(self.close)
+        self.menubar.addAction(self.menuBeenden)
+        #Help
+        self.menuHilfe = QMenu(parent=self.menubar)
+        self.menuHilfe.setObjectName("menuHilfe")
+        self.menubar.addAction(self.menuHilfe.menuAction())
 
-        self.statusbar = QtWidgets.QStatusBar(parent=MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
-
-        self.changeName = QtGui.QAction(parent=MainWindow)
+        #Changename Object  -   A Button in "Einstellungen"-Object
+        self.changeName = QAction(parent=MainWindow)
         self.changeName.setObjectName("changeName")
         self.changeName.triggered.connect(self.openNameChangeWindow)
+        self.menuEinstellungen.addAction(self.changeName)
 
-        self.action_ber_FlowChatPy = QtGui.QAction(parent=MainWindow)
-        self.action_ber_FlowChatPy.setObjectName("action_ber_FlowChatPy")
-        self.actionFenster_Fokusieren = QtGui.QAction(parent=MainWindow)
+        #About_FlowChatPi Object    -   A Button in "Einstellungen"-Object
+        self.action_about_FlowChatPy = QAction(parent=MainWindow)
+        self.action_about_FlowChatPy.setObjectName("action_ber_FlowChatPy")
+        self.action_about_FlowChatPy.triggered.connect(self.openAboutWindow)
+        self.menuHilfe.addAction(self.action_about_FlowChatPy)
+
+        #FensterFokusieren Object  -   A Button in "Einstellungen"-Object
+        self.actionFenster_Fokusieren = QAction(parent=MainWindow)
         self.actionFenster_Fokusieren.setCheckable(True)
         self.actionFenster_Fokusieren.setObjectName("actionFenster_Fokusieren")
-        self.actionDunkle_Ansicht = QtGui.QAction(parent=MainWindow)
+        self.menuEinstellungen.addAction(self.actionFenster_Fokusieren)
+
+        #Dunkle_Ansicht Object  -   A Button in "Einstellungen"-Object to change the color theme
+        self.actionDunkle_Ansicht = QAction(parent=MainWindow)
         self.actionDunkle_Ansicht.setCheckable(True)
         self.actionDunkle_Ansicht.setObjectName("darkMode")
-
-        self.menuEinstellungen.addAction(self.changeName)
-        self.menuEinstellungen.addAction(self.actionFenster_Fokusieren)
-        self.menuEinstellungen.addAction(self.actionDunkle_Ansicht)
-        self.menuHilfe.addAction(self.action_ber_FlowChatPy)
         self.actionDunkle_Ansicht.triggered.connect(self.change_theme)
-
-        self.menuEinstellungen.addAction(self.changeName)
-        self.menuEinstellungen.addAction(self.actionFenster_Fokusieren)
         self.menuEinstellungen.addAction(self.actionDunkle_Ansicht)
-
-        self.menubar.addAction(self.menuEinstellungen.menuAction())
-        self.menubar.addAction(self.menuBeenden.menuAction())
-        self.menubar.addAction(self.menuHilfe.menuAction())
-        #self.menuBeenden.triggered.connect(self.closeEvent(MainWindow.closeEvent))
 
         self.retranslateUi(MainWindow)
 
@@ -115,7 +116,7 @@ class Ui_MainWindow(QWidget):
 
         self.recv = threading.Thread(target=self.poll_for_new_messages)
         self.recv.start()
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        QMetaObject.connectSlotsByName(MainWindow)
 
     # defines what happens when you close the window
     def closeEvent(self, event):
@@ -133,19 +134,22 @@ class Ui_MainWindow(QWidget):
             event.ignore()
 
     def openNameChangeWindow(self):
-        changeNameWindow.ChangeNameWindow = changeNameWindow.ChangeNameWindow()
+        self.changeNameWindow = changeNameWindow.ChangeNameWindow()
+
+    def openAboutWindow(self):
+        self.aboutWindow = aboutFlowChatPyWindow.AboutWindow()
 
     def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
+        _translate = QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "FlowChatPy"))
         self.chatButton.setText(_translate("MainWindow", "Senden"))
         self.menuEinstellungen.setTitle(_translate("MainWindow", "Einstellungen"))
-        self.menuBeenden.setTitle(_translate("MainWindow", "Beenden"))
+        self.menuBeenden.setText(_translate("MainWindow", "Beenden"))
         self.menuHilfe.setTitle(_translate("MainWindow", "Hilfe"))
         self.changeName.setText(_translate("MainWindow", "Namen ändern"))
         self.actionFenster_Fokusieren.setText(_translate("MainWindow", "Fenster fokussieren"))
         self.actionDunkle_Ansicht.setText(_translate("MainWindow", "Darkmode"))
-        self.action_ber_FlowChatPy.setText(_translate("MainWindow", "Über FlowChatPy"))
+        self.action_about_FlowChatPy.setText(_translate("MainWindow", "Über FlowChatPy"))
 
     def send(self, *args):
         net.networkmanager.send_message(self.userChat.text())
