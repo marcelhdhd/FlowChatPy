@@ -132,10 +132,10 @@ def listen_loop():
             print("RECIEVED message " + json)
             message_queue.append(json)
         elif isinstance(net.messagepayload.Incoming(json).json_to_messagepayload(), net.messagepayload.Command):
-            print("Command recieved: " + json)
+            print("RECIEVED command: " + json)
             pass
         else:
-            print("Packet recieved: " + json)
+            print("RECIEVED packet: " + json)
             pass
     sock.close()
 
