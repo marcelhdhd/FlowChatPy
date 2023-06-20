@@ -15,7 +15,7 @@ from PyQt6.QtWidgets import QWidget, QApplication, QMessageBox, QMainWindow, QGr
     QPushButton, QTextBrowser, QMenuBar, QMenu
 
 import net.networkmanager
-from gui import changeNameWindow, aboutFlowChatPyWindow
+from gui import aboutFlowChatPyWindow
 from net import networkmanager
 from net.userlist import UserList
 from settings import settings
@@ -128,6 +128,11 @@ class Ui_MainWindow(QWidget):
         self.retranslateUi(MainWindow)
 
         self.change_theme_color()
+        if settings.settingsInstance.dark_mode:
+            self.actionDunkle_Ansicht.setChecked(True)
+        self.change_focus()
+        if settings.settingsInstance.focus_window:
+            self.actionFenster_Fokusieren.setChecked(True)
 
         self.recv = threading.Thread(target=self.poll_for_new_messages)
         self.recv.start()
@@ -150,7 +155,11 @@ class Ui_MainWindow(QWidget):
             event.ignore()
 
     def openNameChangeWindow(self):
+        MainWindow.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint, False)
+        MainWindow.show()
+        from gui import changeNameWindow
         self.changeNameWindow = changeNameWindow.ChangeNameWindow()
+
 
     def openAboutWindow(self):
         self.aboutWindow = aboutFlowChatPyWindow.AboutWindow()
