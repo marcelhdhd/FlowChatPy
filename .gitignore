@@ -111,3 +111,4 @@ pip-selfcheck.json
 /.idea/*
 /.idea
 .idea/*
+.idea/misc.xml
