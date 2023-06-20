@@ -1,5 +1,0 @@
-import changeNameWindow
-
-
-class ChangeNameModel:
-

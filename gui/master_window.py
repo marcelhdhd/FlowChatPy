@@ -10,16 +10,17 @@ import threading
 import time
 
 from PyQt6.QtCore import Qt, QSize, QRect, QMetaObject, QCoreApplication, QStringListModel
-from PyQt6.QtGui import QAction, QPalette, QColor, QTextCursor
+from PyQt6.QtGui import QAction, QPalette, QColor, QTextCursor,QIcon
 from PyQt6.QtWidgets import QWidget, QApplication, QMessageBox, QMainWindow, QGridLayout, QLineEdit, QListView, \
     QPushButton, QTextBrowser, QMenuBar, QMenu
 
 import net.networkmanager
 from gui import changeNameWindow, aboutFlowChatPyWindow
-from net import networkmanager, userlist
-from net.userlist import UserList
+from net import networkmanager
 from settings import settings
 
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+ICON_PATH = os.path.join(ROOT_DIR, 'icon.ico')
 
 
 class Ui_MainWindow(QWidget):
@@ -29,11 +30,14 @@ class Ui_MainWindow(QWidget):
 
     def __init__(self):
         super().__init__()
-        # netm = Networkmanager()
+        self.setWindowIcon(QIcon(ICON_PATH))
+        MainWindow.setWindowIcon(QIcon(ICON_PATH))
         networkmanager.run_daemon()
 
     def setupUi(self, MainWindow):
-        #MainWindow Object
+        self.setWindowIcon(QIcon(ICON_PATH))
+        MainWindow.setWindowIcon(QIcon(ICON_PATH))
+        # MainWindow Object
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1026, 675)
         MainWindow.setMinimumSize(QSize(838, 0))
@@ -137,7 +141,7 @@ class Ui_MainWindow(QWidget):
         if reply == qmsgbox.standardButtons().Yes:
             event.accept()
             # closes sockets
-            net.networkmanager.on_closing_userlist()
+            net.networkmanager.on_closing()
             # stops all threads and shuts down the application on close
 
             os._exit(0)
@@ -240,8 +244,13 @@ class Ui_MainWindow(QWidget):
 
 import sys
 
+print("Icon Path: ")
+print(ICON_PATH)
+
 app = QApplication(sys.argv)
+app.setWindowIcon(QIcon(ICON_PATH))
 MainWindow = QMainWindow()
+MainWindow.setWindowIcon(QIcon(ICON_PATH))
 ui = Ui_MainWindow()
 ui.setupUi(MainWindow)
 MainWindow.show()
