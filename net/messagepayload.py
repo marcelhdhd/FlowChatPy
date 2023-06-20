@@ -1,5 +1,10 @@
 import json
 
+class UserListener:
+    def __init__(self, data, name):
+        self.type = "listener"
+        self.name = name
+        self.data = data
 
 # class constructor for the user message
 class UserMessage:

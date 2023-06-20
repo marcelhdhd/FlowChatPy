@@ -109,8 +109,34 @@ def send_custom_message(message):
 def on_closing():
     net.networkmanager.running = False
     stop = net.messagepayload.Command()
+    stop.test = "testing"
     send(stop.toJson())
+    user_list.remove_user(net.messagepayload.UserMessage.__name__)
     send_message("Bye")
+
+def send_message_usernameRemoval(message):
+    payloadmessage = payloads.UserMessage()
+    if settings.settingsInstance.user_name is None:
+        payloadmessage.name = hostname
+    else:
+        payloadmessage.name = settings.settingsInstance.user_name
+    payloadmessage.ip = hostname
+    payloadmessage.message = check_emote(message)
+    payloadmessage.date = datetime.now().strftime("[%H:%M:%S] ")
+    user_list.remove_user(payloadmessage.name)
+
+    # also utf-8 encode that message
+    send(payloadmessage.toJson())
+
+def on_closing_userlist():
+    net.networkmanager.running = False
+    stop = net.messagepayload.Command()
+    stop.test = "testing"
+    send(stop.toJson())
+    user_list.remove_user(net.messagepayload.UserMessage.__name__)
+    send_message_usernameRemoval("Bye")
+
+
 
 
 # workaround method for receiving messages

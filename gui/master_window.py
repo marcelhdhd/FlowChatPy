@@ -9,19 +9,24 @@ import os
 import threading
 import time
 
-from PyQt6.QtCore import Qt, QSize, QRect, QMetaObject, QCoreApplication
+from PyQt6.QtCore import Qt, QSize, QRect, QMetaObject, QCoreApplication, QStringListModel
 from PyQt6.QtGui import QAction, QPalette, QColor, QTextCursor
 from PyQt6.QtWidgets import QWidget, QApplication, QMessageBox, QMainWindow, QGridLayout, QLineEdit, QListView, \
     QPushButton, QTextBrowser, QMenuBar, QMenu
 
 import net.networkmanager
 from gui import changeNameWindow, aboutFlowChatPyWindow
-from net import networkmanager
+from net import networkmanager, userlist
 from net.userlist import UserList
 from settings import settings
 
 
+
 class Ui_MainWindow(QWidget):
+    userlistlist = UserList()
+    userlistmodel = QStringListModel()
+
+
     def __init__(self):
         super().__init__()
         # netm = Networkmanager()
@@ -59,6 +64,8 @@ class Ui_MainWindow(QWidget):
 
         #Userlist Object    -   The List of all users
         self.userList = QListView(parent=self.centralwidget)
+        self.model = self.userlistmodel
+        self.userList.setModel(self.model)
         self.userList.setObjectName("userList")
 
         self.gridLayout.addWidget(self.userList, 0, 1, 1, 2)
@@ -130,8 +137,9 @@ class Ui_MainWindow(QWidget):
         if reply == qmsgbox.standardButtons().Yes:
             event.accept()
             # closes sockets
-            net.networkmanager.on_closing()
+            net.networkmanager.on_closing_userlist()
             # stops all threads and shuts down the application on close
+
             os._exit(0)
         else:
             event.ignore()
@@ -216,8 +224,8 @@ class Ui_MainWindow(QWidget):
                     if payloadtype == "userMessage":
                         # format the payload to print as a readable message format
                         message = payload["date"] + payload["name"] + " : " + payload["message"]
-                        user_List.add_user(self, payload["name"])
-
+                        self.userlistlist.add_user(payload["name"])
+                        self.userlistmodel.setStringList(self.userlistlist.get_users())
                     if message is not None and payload["message"] != "":
                         self.chatBox.append(message)
                         # Scrolled automatisch zu einer neuen Nachricht
@@ -237,5 +245,5 @@ MainWindow = QMainWindow()
 ui = Ui_MainWindow()
 ui.setupUi(MainWindow)
 MainWindow.show()
-user_List = UserList()
+
 sys.exit(app.exec())
