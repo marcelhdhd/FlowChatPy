@@ -17,6 +17,7 @@ from PyQt6.QtWidgets import QWidget, QApplication, QMessageBox, QMainWindow, QGr
 import net.networkmanager
 from gui import changeNameWindow, aboutFlowChatPyWindow
 from net import networkmanager
+from net.userlist import UserList
 from settings import settings
 
 
@@ -59,6 +60,7 @@ class Ui_MainWindow(QWidget):
         #Userlist Object    -   The List of all users
         self.userList = QListView(parent=self.centralwidget)
         self.userList.setObjectName("userList")
+
         self.gridLayout.addWidget(self.userList, 0, 1, 1, 2)
 
         #Chatbox Object     -   The Chatwindow
@@ -214,6 +216,7 @@ class Ui_MainWindow(QWidget):
                     if payloadtype == "userMessage":
                         # format the payload to print as a readable message format
                         message = payload["date"] + payload["name"] + " : " + payload["message"]
+                        user_List.add_user(self, payload["name"])
 
                     if message is not None and payload["message"] != "":
                         self.chatBox.append(message)
@@ -234,4 +237,5 @@ MainWindow = QMainWindow()
 ui = Ui_MainWindow()
 ui.setupUi(MainWindow)
 MainWindow.show()
+user_List = UserList()
 sys.exit(app.exec())

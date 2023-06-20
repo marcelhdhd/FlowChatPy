@@ -8,6 +8,7 @@ from datetime import datetime
 from typing import Any
 
 import net.messagepayload
+from net.userlist import UserList
 from settings import settings
 from net import messagepayload as payloads
 
@@ -18,6 +19,7 @@ broadcast_address = ('255.255.255.255', listen_port)
 msg_encoding = "utf-8"
 mask = '255.255.255.0'
 running = False
+user_list = UserList()
 
 
 # method for finding local ip
@@ -126,10 +128,12 @@ def listen_loop():
         msg_and_address = sock.recvfrom(4096)
         # message will be utf-8 decoded
         json = msg_and_address[0].decode(msg_encoding)
+
         # todo change displayed addr to chosen username to allow recognition of users
         if isinstance(net.messagepayload.Incoming(json).json_to_messagepayload(),
                       (net.messagepayload.UserMessage, net.messagepayload.CustomMessage)):
             print("RECIEVED message " + json)
+
             message_queue.append(json)
         elif isinstance(net.messagepayload.Incoming(json).json_to_messagepayload(), net.messagepayload.Command):
             print("Command recieved: " + json)
@@ -174,4 +178,5 @@ class Networkmanager():
 
     def run(self):
         print("Network Thread started")
+
         threading.Thread(target=self.start).start()
