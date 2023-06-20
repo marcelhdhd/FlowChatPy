@@ -17,6 +17,7 @@ from PyQt6.QtWidgets import QWidget, QApplication, QMessageBox, QMainWindow, QGr
 import net.networkmanager
 from gui import changeNameWindow, aboutFlowChatPyWindow
 from net import networkmanager
+from net.userlist import UserList
 from settings import settings
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
