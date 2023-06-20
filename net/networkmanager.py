@@ -134,7 +134,7 @@ def on_closing_userlist():
     stop.test = "testing"
     send(stop.toJson())
     user_list.remove_user(net.messagepayload.UserMessage.__name__)
-    send_message_usernameRemoval("Bye")
+    send_message_usernameRemoval("__//Bye//__")
 
 
 
