@@ -47,4 +47,4 @@ class AboutWindow:
                                                     "alle Personen im gleichen Netzwerk problemlos miteinander \n"
                                                     "chatten können.\n\n"
                                                     "©2023 Julian Röder, Jonas Hormeß, Pascal Mika, Marcel Popp, "
-                                                    "Max Kratzer"))
+                                                    "Max Kratzer\nv1.0"))
