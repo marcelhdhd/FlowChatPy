@@ -239,11 +239,11 @@ class Ui_MainWindow(QWidget):
                         # format the payload to print as a readable message format
                         message = payload["date"] + payload["name"] + " : " + payload["message"]
                         if payload["message"] == "__//Bye//__":
-                            self.userlistlist.remove_user(payload["name"])
-                            self.userlistmodel.setStringList(self.userlistlist.get_users())
+                            self.userlistlist.remove_user(payload["name"], payload["ip"])
+                            self.userlistmodel.setStringList(self.userlistlist.extractnames())
                         else:
-                            self.userlistlist.add_user(payload["name"])
-                            self.userlistmodel.setStringList(self.userlistlist.get_users())
+                            self.userlistlist.add_user(payload["name"], payload["ip"])
+                            self.userlistmodel.setStringList(self.userlistlist.extractnames())
                     if message is not None and payload["message"] != "":
                         self.chatBox.append(message)
                         # Scrolled automatisch zu einer neuen Nachricht
