@@ -92,6 +92,7 @@ def send(message: 'This is a UDP message') -> None:
                          socket.SOCK_DGRAM,
                          socket.IPPROTO_UDP)  # UDP
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    sock.bind((hostname, 0))
     sock.sendto(bytes(message, "utf-8"), ("255.255.255.255", 25000))
     # message_queue.append(message)
     sock.close()
