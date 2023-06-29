@@ -30,6 +30,7 @@ def ip_finder():
 hostname = ip_finder()
 user_list = UserList()
 
+
 class ListenProtocol(asyncio.DatagramProtocol):
     def __init__(self):
         super().__init__()
@@ -62,6 +63,7 @@ def send(message: 'This is a UDP message') -> None:
         sock.sendto(bytes(message, "utf-8"), ("255.255.255.255", 25000))
         sock.close()
 
+
 def send_message(message):
     payloadmessage = UserMessage()
     if settings.settingsInstance.user_name is None:
@@ -69,10 +71,11 @@ def send_message(message):
     else:
         payloadmessage.name = settings.settingsInstance.user_name
     payloadmessage.ip = hostname
-    payloadmessage.message = check_emote(message)
+    payloadmessage.message = message
     payloadmessage.date = datetime.now().strftime("[%H:%M:%S] ")
     # also utf-8 encode that message
     send(payloadmessage.toJson())
+
 
 # method for sending custom messages
 def send_custom_message(message):
@@ -81,13 +84,15 @@ def send_custom_message(message):
     # also utf-8 encode that message
     send(payloadMessage.toJson())
 
+
 # method for closing sockets and listeners
 def on_closing():
     stop = Command()
-    stop.test = "testing"
+    stop.command = "Bye"
+    stop.date = datetime.now().strftime("[%H:%M:%S] ")
+    stop.ip = hostname
     send(stop.toJson())
-    user_list.remove_user(UserMessage.__name__)
-    send_message("__//Bye//__")
+
 
 def send_message_usernameRemoval(message):
     payloadmessage = UserMessage()
@@ -96,44 +101,13 @@ def send_message_usernameRemoval(message):
     else:
         payloadmessage.name = settings.settingsInstance.user_name
     payloadmessage.ip = hostname
-    payloadmessage.message = check_emote(message)
+    payloadmessage.message = message
     payloadmessage.date = datetime.now().strftime("[%H:%M:%S] ")
     user_list.remove_user(payloadmessage.name)
 
     # also utf-8 encode that message
     send(payloadmessage.toJson())
 
-def check_which_emote(emote_ex):
-    emote = re.sub(":", "", emote_ex)
-    if emote == "smile":
-        return "😊"
-    elif emote == "crylaugh":
-        return "😂"
-    elif emote == "cool":
-        return "😎"
-    elif emote == "think":
-        return "🤔"
-    elif emote == "smirk":
-        return "😏"
-    elif emote == "sad":
-        return "🙁"
-    elif emote == "yawn":
-        return "🥱"
-    elif emote == "cry":
-        return "😭"
-    elif emote == "fear":
-        return "😱"
-    elif emote == "clown":
-        return "🤡"
-    else:
-        return emote_ex
-
-
-def check_emote(message):
-    emotes = re.findall(r":.*?:", message)
-    for emote_ex in emotes:
-        message = re.sub(emote_ex, check_which_emote(emote_ex), message)
-    return message
 
 def start():
     loop = asyncio.new_event_loop()
