@@ -19,14 +19,15 @@ class UserList:
     def get_users(self):
         return self.users
 
-    def remove_user(self, name):
+    def remove_user(self, ip):
         for user in self.users:
-            if user['name'] == name:
+            if user['ip'] == ip:
+                name = user['name']
                 self.users.remove(user)
-                print(f"{name} removed successfully.")
+                print(f"{name} : {ip} removed successfully.")
                 break
         else:
-            print(f"{name} is not in the list.")
+            print(f"{ip}  is not in the list.")
 
 
     def extractnames(self):
