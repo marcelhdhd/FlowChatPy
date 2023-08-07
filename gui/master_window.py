@@ -47,29 +47,29 @@ class Ui_MainWindow(QWidget):
         MainWindow.setMaximumSize(QSize(4048, 4048))
         MainWindow.closeEvent = self.closeEvent
 
-        #Centralwidget Object
+        # Centralwidget Object
         self.centralwidget = QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         MainWindow.setCentralWidget(self.centralwidget)
 
-        #GridLayout Object
+        # GridLayout Object
         self.gridLayout = QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName("gridLayout")
 
-        #UserChat Object    -   The inputbar
+        # UserChat Object    -   The inputbar
         self.userChat = QLineEdit(parent=self.centralwidget)
         self.userChat.setObjectName("userChat")
         self.gridLayout.addWidget(self.userChat, 1, 0, 1, 2)
         self.userChat.returnPressed.connect(self.send)
 
-        #Chatbutton Object  -   The Send-Button
+        # Chatbutton Object  -   The Send-Button
         self.chatButton = QPushButton(parent=self.centralwidget)
         self.chatButton.setAutoDefault(True)
         self.chatButton.setObjectName("chatButton")
         self.gridLayout.addWidget(self.chatButton, 1, 2, 1, 1)
         self.chatButton.clicked.connect(self.send)
 
-        #Userlist Object    -   The List of all users
+        # Userlist Object    -   The List of all users
         self.userList = QListView(parent=self.centralwidget)
         self.model = self.userlistmodel
         self.userList.setModel(self.model)
@@ -77,50 +77,50 @@ class Ui_MainWindow(QWidget):
 
         self.gridLayout.addWidget(self.userList, 0, 1, 1, 2)
 
-        #Chatbox Object     -   The Chatwindow
+        # Chatbox Object     -   The Chatwindow
         self.chatBox = QTextBrowser(parent=self.centralwidget)
         self.chatBox.setObjectName("chatBox")
         self.gridLayout.addWidget(self.chatBox, 0, 0, 1, 1)
 
-        #Menubar Object     -   A Menubar with Objects "Einstellungen", "Beenden" and "Help"
+        # Menubar Object     -   A Menubar with Objects "Einstellungen", "Beenden" and "Help"
         self.menubar = QMenuBar(parent=MainWindow)
         self.menubar.setGeometry(QRect(0, 0, 1026, 22))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
-        #Einstellungen
+        # Einstellungen
         self.menuEinstellungen = QMenu(parent=self.menubar)
         self.menuEinstellungen.setObjectName("menuEinstellungen")
         self.menubar.addAction(self.menuEinstellungen.menuAction())
-        #Beenden
+        # Beenden
         self.menuBeenden = QAction(parent=self.menubar)
         self.menuBeenden.setObjectName("menuBeenden")
         self.menuBeenden.triggered.connect(self.close)
         self.menubar.addAction(self.menuBeenden)
-        #Help
+        # Help
         self.menuHilfe = QMenu(parent=self.menubar)
         self.menuHilfe.setObjectName("menuHilfe")
         self.menubar.addAction(self.menuHilfe.menuAction())
 
-        #Changename Object  -   A Button in "Einstellungen"-Object
+        # Changename Object  -   A Button in "Einstellungen"-Object
         self.changeName = QAction(parent=MainWindow)
         self.changeName.setObjectName("changeName")
         self.changeName.triggered.connect(self.openNameChangeWindow)
         self.menuEinstellungen.addAction(self.changeName)
 
-        #About_FlowChatPi Object    -   A Button in "Einstellungen"-Object
+        # About_FlowChatPi Object    -   A Button in "Einstellungen"-Object
         self.action_about_FlowChatPy = QAction(parent=MainWindow)
         self.action_about_FlowChatPy.setObjectName("action_ber_FlowChatPy")
         self.action_about_FlowChatPy.triggered.connect(self.openAboutWindow)
         self.menuHilfe.addAction(self.action_about_FlowChatPy)
 
-        #FensterFokusieren Object  -   A Button in "Einstellungen"-Object
+        # FensterFokusieren Object  -   A Button in "Einstellungen"-Object
         self.actionFenster_Fokusieren = QAction(parent=MainWindow)
         self.actionFenster_Fokusieren.setCheckable(True)
         self.actionFenster_Fokusieren.setObjectName("actionFenster_Fokusieren")
         self.actionFenster_Fokusieren.triggered.connect(self.change_always_on_top)
         self.menuEinstellungen.addAction(self.actionFenster_Fokusieren)
 
-        #Dunkle_Ansicht Object  -   A Button in "Einstellungen"-Object to change the color theme
+        # Dunkle_Ansicht Object  -   A Button in "Einstellungen"-Object to change the color theme
         self.actionDunkle_Ansicht = QAction(parent=MainWindow)
         self.actionDunkle_Ansicht.setCheckable(True)
         self.actionDunkle_Ansicht.setObjectName("darkMode")
